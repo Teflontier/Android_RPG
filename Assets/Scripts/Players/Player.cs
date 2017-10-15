@@ -4,16 +4,47 @@ using UnityEngine;
 
 public abstract class Player : MonoBehaviour {
 
+	public enum PlayerState{
+		CHOOSE_ACTION, MOVEMENT, END_TURN
+	}
+
+	public int maxHp;
+	public int x;
+	public int y;
+
+	private PlayerState state;
     private LevelManager levelManager;
     private int moves = 2;
-    public int x;
-    public int y;
 
     public void Awake() {
         levelManager = GameObject.FindObjectOfType<LevelManager>();
     }
-
+	//--------------------------playeractions-----------------------------
     public bool act() {
+		state = PlayerState.CHOOSE_ACTION;
+
+		switch (state) {
+		case PlayerState.CHOOSE_ACTION:
+			showPossibleMoves (); // zeige freie felder grün an, felder mit blockern orange, felder mit gegnern rot
+			checkIfSomethingClicked ();
+			if (tileWasClicked ())
+				state = PlayerState.MOVEMENT;
+			if(endTurnWasClicked())
+				state = PlayerState.END_TURN;
+			break;
+
+		case PlayerState.MOVEMENT: // man kann nicht auf ein feld gehen, wo sich verbündete befinden
+		// state movement 
+		// move player to target position
+		// subtract moves from actions
+		// switch state to choose action
+			break;
+		}
+
+
+
+
+
         int movesBefore = moves;
         if (Input.GetKey(KeyCode.A) && levelManager.movePlayer(this, x - 1, y))
             moves--;
@@ -38,4 +69,20 @@ public abstract class Player : MonoBehaviour {
         }
         return true;
     }
+
+	private void showPossibleMoves(){
+
+	}
+
+	private void checkIfSomethingClicked(){
+
+	}
+
+	private bool tileWasClicked(){
+		return false;
+	}
+
+	private bool endTurnWasClicked(){
+		return false;
+	}
 }

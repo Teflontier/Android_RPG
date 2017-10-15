@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
 
     public enum GameState {
         INITIALIZE,
+		STORY,
         ACT,
         ANIMATION
     }
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour {
     private LevelManager levelManager;
     private GameState state = GameState.INITIALIZE;
     private List<Player> players = new List<Player>();
+	private bool storyEnded = true;
 
     public void Awake() {
         ddol = GameObject.FindObjectOfType<DDOL>();
@@ -35,6 +37,10 @@ public class GameManager : MonoBehaviour {
         switch (state) {
             case GameState.INITIALIZE:
                 break;
+			case GameState.STORY:
+				if(storyEnded)
+					state = GameState.ACT;
+				break;
             case GameState.ACT:
                 bool allPlayersDoneActing = true;
                 foreach (Player player in players)
