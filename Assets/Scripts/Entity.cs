@@ -22,6 +22,7 @@ public abstract class Entity : MonoBehaviour {
 
     protected int hp;
     protected int moves;
+    protected Dictionary<Tile, int> movableTiles = new Dictionary<Tile, int>();
 
     protected DDOL ddol;
     protected LevelManager levelManager;
@@ -39,68 +40,49 @@ public abstract class Entity : MonoBehaviour {
         moves = maxMoves;
     }
 
-    public void showPossibleMoves() {
-		// tile von wo man kam merken beim zahlen setzen
-		// einfacher mit quadrat drumherum, brauch man vllt garnich
-        Collider2D[] collidersInRange = Physics2D.OverlapCircleAll(transform.position, moves + 0.5f); 
-        List<Blocker> blockersInRange = new List<Blocker>();
-        List<Player> playersInRange = new List<Player>();
-        List<Mob> mobsInRange = new List<Mob>();
-        List<Tile> tilesInRange = new List<Tile>();
-        foreach (Collider2D collider in collidersInRange) {
-            Blocker blocker = collider.GetComponent<Blocker>();
-            if (blocker != null)
-                blockersInRange.Add(blocker);
-            Player player = collider.GetComponent<Player>();
-            if (player != null)
-                playersInRange.Add(player);
-            Mob mob = collider.GetComponent<Mob>();
-            if (mob != null)
-                mobsInRange.Add(mob);
-            Tile tile = collider.GetComponent<Tile>();
-            if (tile != null)
-                tilesInRange.Add(tile);
+    public void calcPossibleMoves() {
+        movableTiles.Clear();
+        List<Tile> tilesToCheck = new List<Tile>();
+        tilesToCheck.AddRange(getSurroundingMovableTilesNotMarked(x, y, moves));
+
+        while (tilesToCheck.Count > 0) {
+            Tile tileToCheck = tilesToCheck[0];
+            Vector2 tilePos = tileToCheck.transform.position;
+            tilesToCheck.RemoveAt(0);
+            int movesLeft = movableTiles[tileToCheck] - 1;
+            if (movesLeft > 0)
+                tilesToCheck.AddRange(getSurroundingMovableTilesNotMarked((int)tilePos.x, (int)tilePos.y, movesLeft));
         }
 
-        List<Vector3> nonWalkablePositions = new List<Vector3>();
-        nonWalkablePositions.AddRange(blockersInRange.ConvertAll(blocker => blocker.transform.position));
-        nonWalkablePositions.AddRange(playersInRange.ConvertAll(player => player.transform.position));
-        nonWalkablePositions.AddRange(mobsInRange.ConvertAll(mob => mob.transform.position));
-
-        List<Tile> filteredTiles = new List<Tile>();
-        tilesInRange.ForEach(tile => {
-                if (!nonWalkablePositions.Contains(tile.transform.position))
-                    filteredTiles.Add(tile);
-            });
-
-        List<Vector2> validPositions = new List<Vector2>();
-        List<Tile> possibleMoves = new List<Tile>();
-        validPositions.Add(transform.position);
-        createOverlaysRecursive(validPositions, filteredTiles, possibleMoves, moves);
+        foreach (KeyValuePair<Tile, int> pair in movableTiles)
+            levelManager.createOverlay(ddol.greenOverlay, pair.Key.transform.position);
     }
 
-    private void createOverlaysRecursive(List<Vector2> validPositions, List<Tile> filteredTiles, List<Tile> possibleMoves, int moves) {
-        if (moves <= 0)
-            return;
-        List<Vector2> newPositions = new List<Vector2>();
-        foreach (Vector2 position in validPositions) {
-            float x = position.x;
-            float y = position.y;
-            createOverlayIfNeededAndFillLists(new Vector2(x - 1, y), filteredTiles, possibleMoves, newPositions);
-            createOverlayIfNeededAndFillLists(new Vector2(x + 1, y), filteredTiles, possibleMoves, newPositions);
-            createOverlayIfNeededAndFillLists(new Vector2(x, y - 1), filteredTiles, possibleMoves, newPositions);
-            createOverlayIfNeededAndFillLists(new Vector2(x, y + 1), filteredTiles, possibleMoves, newPositions);
+    private List<Tile> getSurroundingMovableTilesNotMarked(int x, int y, int movesLeft) {
+        List<Tile> surroundingTiles = new List<Tile>();
+        Tile temp;
+        if (x - 1 >= 0 && isMovable(temp = levelManager.tiles[x - 1, y]) && !movableTiles.ContainsKey(temp)) {
+            surroundingTiles.Add(temp);
+            movableTiles.Add(temp, movesLeft);
         }
-        createOverlaysRecursive(newPositions, filteredTiles, possibleMoves, moves - 1);
+        if (x + 1 < levelManager.tiles.GetLength(0) && isMovable(temp = levelManager.tiles[x + 1, y]) && !movableTiles.ContainsKey(temp)) {
+            surroundingTiles.Add(temp);
+            movableTiles.Add(temp, movesLeft);
+        }
+        if (y - 1 >= 0 && isMovable(temp = levelManager.tiles[x, y - 1]) && !movableTiles.ContainsKey(temp)) {
+            surroundingTiles.Add(temp);
+            movableTiles.Add(temp, movesLeft);
+        }
+        if (y + 1 < levelManager.tiles.GetLength(1) && isMovable(temp = levelManager.tiles[x, y + 1]) && !movableTiles.ContainsKey(temp)) {
+            surroundingTiles.Add(temp);
+            movableTiles.Add(temp, movesLeft);
+        }
+        return surroundingTiles;
     }
 
-    private void createOverlayIfNeededAndFillLists(Vector2 position, List<Tile> filteredTiles, List<Tile> possibleMoves, List<Vector2> newPositions) {
-        Tile tile = filteredTiles.Find(filteredTile => ((Vector2)filteredTile.transform.position).Equals(position) && !possibleMoves.Contains(filteredTile));
-        if (tile == null)
-            return;
-        levelManager.createOverlay(ddol.greenOverlay, tile.transform.position);
-        possibleMoves.Add(tile);
-        newPositions.Add(tile.transform.position);
+    private bool isMovable(Tile tile) {
+        Vector2 pos = tile.transform.position;
+        return levelManager.blockers[(int)pos.x, (int)pos.y] == null && levelManager.entities[(int)pos.x, (int)pos.y] == null;
     }
 
     public void checkIfSomethingClicked() {
@@ -128,7 +110,7 @@ public abstract class Entity : MonoBehaviour {
         return true;
     }
 
-    public void OnMouseDown(){
+    public void OnMouseDown() {
         gameManager.objectWasClicked(gameObject);
     }
 }

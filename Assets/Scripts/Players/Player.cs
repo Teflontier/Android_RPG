@@ -11,7 +11,7 @@ public class Player : Entity {
                 state = EntityState.SHOW_POSSIBLE_MOVES;
                 break;
             case EntityState.SHOW_POSSIBLE_MOVES:
-                showPossibleMoves();
+                calcPossibleMoves();
                 state = EntityState.CHOOSE_ACTION;
                 break;
             case EntityState.CHOOSE_ACTION:
@@ -27,8 +27,7 @@ public class Player : Entity {
     }
 
     private bool handleChooseAction() {
-        print(clickedObject);
-        if (tileWasClicked())
+        if (clickedObject != null)
             state = EntityState.MOVEMENT;
         if (endTurnWasClicked())
             state = EntityState.END_TURN;

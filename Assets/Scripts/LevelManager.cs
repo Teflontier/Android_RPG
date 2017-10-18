@@ -10,11 +10,11 @@ public class LevelManager : MonoBehaviour {
     public int minBlockers = 5;
     public int maxBlockers = 9;
 
-    private DDOL ddol;
-    private Tile[,] tiles = new Tile[width, height];
-    private Blocker[,] blockers = new Blocker[width, height];
-    private Entity[,] entities = new Entity[width, height];
+    [HideInInspector] public Tile[,] tiles = new Tile[width, height];
+    [HideInInspector] public Blocker[,] blockers = new Blocker[width, height];
+    [HideInInspector] public Entity[,] entities = new Entity[width, height];
 
+    private DDOL ddol;
     private Transform playerObjectHolder;
     private Transform mobObjectHolder;
     private Transform tileObjectHolder;
@@ -118,7 +118,7 @@ public class LevelManager : MonoBehaviour {
         return true;
     }
 
-    public void createOverlay(GameObject overlay, Vector2 position){
+    public void createOverlay(GameObject overlay, Vector2 position) {
         GameObject.Instantiate(overlay, position, Quaternion.identity, overlayObjectHolder);
     }
 }
