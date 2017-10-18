@@ -52,6 +52,10 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public void objectWasClicked(GameObject obj){
+        turnList[0].clickedObject = obj;
+    }
+
     public void Update() {
         Entity activeEntity = turnList[0];
         switch (state) {

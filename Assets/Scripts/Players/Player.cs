@@ -27,7 +27,7 @@ public class Player : Entity {
     }
 
     private bool handleChooseAction() {
-        checkIfSomethingClicked();
+        print(clickedObject);
         if (tileWasClicked())
             state = EntityState.MOVEMENT;
         if (endTurnWasClicked())

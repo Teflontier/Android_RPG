@@ -18,6 +18,7 @@ public abstract class Entity : MonoBehaviour {
     public int y;
 
     public EntityState state = EntityState.INITIALIZE;
+    public GameObject clickedObject;
 
     protected int hp;
     protected int moves;
@@ -112,10 +113,6 @@ public abstract class Entity : MonoBehaviour {
         return false;
     }
 
-    public void OnMouseDown() {
-        
-    }
-
     public bool animate() {
         Vector2 currentPosition = transform.position;
         Vector2 targetPosition = new Vector2(x, y);
@@ -127,5 +124,9 @@ public abstract class Entity : MonoBehaviour {
             return false;
         }
         return true;
+    }
+
+    public void OnMouseDown(){
+        gameManager.objectWasClicked(gameObject);
     }
 }
