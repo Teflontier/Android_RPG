@@ -53,3 +53,6 @@ TagManager:
   - name: Overlay
     uniqueID: 1500531469
     locked: 0
+  - name: CommandMenu
+    uniqueID: 2580969613
+    locked: 0

@@ -121,4 +121,9 @@ public class LevelManager : MonoBehaviour {
     public void createOverlay(GameObject overlay, Vector2 position) {
         GameObject.Instantiate(overlay, position, Quaternion.identity, overlayObjectHolder);
     }
+
+    public void destroyOverlays() {
+        foreach (Transform child in overlayObjectHolder)
+            Destroy(child.gameObject);
+    }
 }

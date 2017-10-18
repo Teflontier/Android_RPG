@@ -33,7 +33,9 @@ public class GameManager : MonoBehaviour {
 
     private void createPlayers() {
         // the players should actually be created by some sort of ui and be chosen by the gamer
-        players.Add(GameObject.Instantiate(ddol.players[0].gameObject).GetComponent<Player>());
+        Player player = GameObject.Instantiate(ddol.players[0].gameObject).GetComponent<Player>();
+        Camera.main.transform.SetParent(player.gameObject.transform);
+        players.Add(player);
     }
 
     private void resetTurnList() {
@@ -52,7 +54,7 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void objectWasClicked(GameObject obj){
+    public void objectWasClicked(GameObject obj) {
         turnList[0].clickedObject = obj;
     }
 
@@ -66,10 +68,11 @@ public class GameManager : MonoBehaviour {
                     state = GameState.ACT;
                 break;
             case GameState.ACT:
-                if (activeEntity.act()) {
-                    turnList.Remove(activeEntity);
-                    turnList.Add(activeEntity);
-                }
+                if (!activeEntity.act())
+                    break;
+                turnList.Remove(activeEntity);
+                turnList.Add(activeEntity);
+                activeEntity.state = Entity.EntityState.INITIALIZE;
                 break;
         }
     }

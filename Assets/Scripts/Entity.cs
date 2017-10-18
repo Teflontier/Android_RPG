@@ -7,7 +7,9 @@ public abstract class Entity : MonoBehaviour {
     public enum EntityState {
         INITIALIZE,
         SHOW_POSSIBLE_MOVES,
-        CHOOSE_ACTION,
+        WAIT_FOR_ACTION,
+        CREATE_COMMAND_MENU,
+        WAIT_FOR_MENU_SELECTION,
         MOVEMENT,
         END_TURN
     }
@@ -27,11 +29,13 @@ public abstract class Entity : MonoBehaviour {
     protected DDOL ddol;
     protected LevelManager levelManager;
     protected GameManager gameManager;
+    protected CommandMenu commandMenu;
 
     public void Awake() {
         ddol = GameObject.FindObjectOfType<DDOL>();
         levelManager = GameObject.FindObjectOfType<LevelManager>();
         gameManager = GameObject.FindObjectOfType<GameManager>();
+        commandMenu = GameObject.FindObjectOfType<CommandMenu>();
     }
 
     public abstract bool act();
@@ -83,18 +87,6 @@ public abstract class Entity : MonoBehaviour {
     private bool isMovable(Tile tile) {
         Vector2 pos = tile.transform.position;
         return levelManager.blockers[(int)pos.x, (int)pos.y] == null && levelManager.entities[(int)pos.x, (int)pos.y] == null;
-    }
-
-    public void checkIfSomethingClicked() {
-
-    }
-
-    protected bool tileWasClicked() {
-        return false;
-    }
-
-    protected bool endTurnWasClicked() {
-        return false;
     }
 
     public bool animate() {

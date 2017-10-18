@@ -53,6 +53,10 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Blockers\Blocker.cs" />
      <Compile Include="Assets\Scripts\Blockers\Wall.cs" />
+     <Compile Include="Assets\Scripts\CommandMenu\Button.cs" />
+     <Compile Include="Assets\Scripts\CommandMenu\CommandMenu.cs" />
+     <Compile Include="Assets\Scripts\CommandMenu\End.cs" />
+     <Compile Include="Assets\Scripts\CommandMenu\Move.cs" />
      <Compile Include="Assets\Scripts\DDOL.cs" />
      <Compile Include="Assets\Scripts\Entity.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
