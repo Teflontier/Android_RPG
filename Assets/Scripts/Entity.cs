@@ -24,10 +24,12 @@ public abstract class Entity : MonoBehaviour {
 
     protected DDOL ddol;
     protected LevelManager levelManager;
+    protected GameManager gameManager;
 
     public void Awake() {
         ddol = GameObject.FindObjectOfType<DDOL>();
         levelManager = GameObject.FindObjectOfType<LevelManager>();
+        gameManager = GameObject.FindObjectOfType<GameManager>();
     }
 
     public abstract bool act();

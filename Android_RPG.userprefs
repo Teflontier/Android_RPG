@@ -1,13 +1,14 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Entity.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Players\Player.cs">
     <Files>
-      <File FileName="Assets\Scripts\GameManager.cs" Line="57" Column="1" />
+      <File FileName="Assets\Scripts\GameManager.cs" Line="23" Column="9" />
       <File FileName="Assets\Scripts\LevelManager.cs" Line="122" Column="92" />
-      <File FileName="Assets\Scripts\Entity.cs" Line="88" Column="10" />
-      <File FileName="Assets\Scripts\Players\Player.cs" Line="8" Column="1" />
-      <File FileName="Assets\Scripts\Mobs\Mob.cs" Line="8" Column="21" />
-      <File FileName="Assets\Scripts\Tiles\Tile.cs" Line="8" Column="9" />
+      <File FileName="Assets\Scripts\Entity.cs" Line="32" Column="43" />
+      <File FileName="Assets\Scripts\Players\Player.cs" Line="31" Column="29" />
+      <File FileName="Assets\Scripts\Mobs\Mob.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Tiles\Tile.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\DDOL.cs" Line="15" Column="36" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
