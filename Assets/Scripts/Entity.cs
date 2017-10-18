@@ -40,7 +40,9 @@ public abstract class Entity : MonoBehaviour {
     }
 
     public void showPossibleMoves() {
-        Collider2D[] collidersInRange = Physics2D.OverlapCircleAll(transform.position, moves + 0.5f);
+		// tile von wo man kam merken beim zahlen setzen
+		// einfacher mit quadrat drumherum, brauch man vllt garnich
+        Collider2D[] collidersInRange = Physics2D.OverlapCircleAll(transform.position, moves + 0.5f); 
         List<Blocker> blockersInRange = new List<Blocker>();
         List<Player> playersInRange = new List<Player>();
         List<Mob> mobsInRange = new List<Mob>();
