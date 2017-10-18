@@ -13,10 +13,21 @@ public class LevelManager : MonoBehaviour {
     private DDOL ddol;
     private Tile[,] tiles = new Tile[width, height];
     private Blocker[,] blockers = new Blocker[width, height];
-    private Player[,] players = new Player[width, height];
+    private Entity[,] entities = new Entity[width, height];
+
+    private Transform playerObjectHolder;
+    private Transform mobObjectHolder;
+    private Transform tileObjectHolder;
+    private Transform blockerObjectHolder;
+    private Transform overlayObjectHolder;
 
     public void Awake() {
         ddol = GameObject.FindObjectOfType<DDOL>();
+        playerObjectHolder = transform.Find("Players");
+        mobObjectHolder = transform.Find("Mobs");
+        tileObjectHolder = transform.Find("Tiles");
+        blockerObjectHolder = transform.Find("Blockers");
+        overlayObjectHolder = transform.Find("Overlays");
     }
 
     public void createLevel(List<Player> playersToPlace) {
@@ -27,12 +38,21 @@ public class LevelManager : MonoBehaviour {
     }
 
     private void destroyLevel() {
-        foreach (Transform child in transform)
+        foreach (Transform child in playerObjectHolder)
+            Destroy(child.gameObject);
+        foreach (Transform child in mobObjectHolder)
+            Destroy(child.gameObject);
+        foreach (Transform child in tileObjectHolder)
+            Destroy(child.gameObject);
+        foreach (Transform child in blockerObjectHolder)
+            Destroy(child.gameObject);
+        foreach (Transform child in overlayObjectHolder)
             Destroy(child.gameObject);
         for (int i = 0; i < width; i++) {
             for (int k = 0; k < height; k++) {
                 tiles[i, k] = null;
                 blockers[i, k] = null;
+                entities[i, k] = null;
             }
         }
     }
@@ -40,7 +60,7 @@ public class LevelManager : MonoBehaviour {
     private void createTiles() {
         for (int i = 0; i < width; i++) {
             for (int k = 0; k < height; k++) {
-                Tile tile = GameObject.Instantiate(ddol.tiles[Random.Range(0, ddol.tiles.Count)], new Vector2(i, k), Quaternion.identity, transform) as Tile;
+                Tile tile = GameObject.Instantiate(ddol.tiles[Random.Range(0, ddol.tiles.Count)], new Vector2(i, k), Quaternion.identity, tileObjectHolder) as Tile;
                 tiles[i, k] = tile;
             }
         }
@@ -49,16 +69,16 @@ public class LevelManager : MonoBehaviour {
     private void createBlockers() {
         for (int i = 0; i < Random.Range(minBlockers, maxBlockers); i++) {
             Vector2 coordinates = getRandomCoordinatesWithoutBlocker();
-            Blocker blocker = GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], coordinates, Quaternion.identity, transform) as Blocker;
+            Blocker blocker = GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], coordinates, Quaternion.identity, blockerObjectHolder) as Blocker;
             blockers[(int)coordinates.x, (int)coordinates.y] = blocker;
         }
     }
 
     private void createPlayers(List<Player> playersToPlace) {
         foreach (Player player in playersToPlace) {
-            player.transform.SetParent(transform);
+            player.transform.SetParent(playerObjectHolder);
             Vector2 coordinates = getRandomCoordinatesWithoutBlocker();
-            teleportPlayer(player, (int)coordinates.x, (int)coordinates.y);
+            teleportEntity(player, (int)coordinates.x, (int)coordinates.y);
         }
     }
 
@@ -73,28 +93,32 @@ public class LevelManager : MonoBehaviour {
         return coordinates;
     }
 
-    public bool movePlayer(Player player, int x, int y) {
+    public bool moveEntity(Entity entity, int x, int y) {
         if (x < 0 || x > width - 1 || y < 0 || y > height - 1)
             return false;
-        if (blockers[x, y] != null || players[x, y] != null)
+        if (blockers[x, y] != null || entities[x, y] != null)
             return false;
-        players[player.x, player.y] = null;
-        players[x, y] = player;
-        player.x = x;
-        player.y = y;
+        entities[entity.x, entity.y] = null;
+        entities[x, y] = entity;
+        entity.x = x;
+        entity.y = y;
         return true;
     }
 
-    public bool teleportPlayer(Player player, int x, int y) {
+    public bool teleportEntity(Entity entity, int x, int y) {
         if (x < 0 || x > width - 1 || y < 0 || y > height - 1)
             return false;
-        if (blockers[x, y] != null || players[x, y] != null)
+        if (blockers[x, y] != null || entities[x, y] != null)
             return false;
-        players[player.x, player.y] = null;
-        players[x, y] = player;
-        player.x = x;
-        player.y = y;
-        player.transform.position = new Vector2(player.x, player.y);
+        entities[entity.x, entity.y] = null;
+        entities[x, y] = entity;
+        entity.x = x;
+        entity.y = y;
+        entity.transform.position = new Vector2(entity.x, entity.y);
         return true;
+    }
+
+    public void createOverlay(GameObject overlay, Vector2 position){
+        GameObject.Instantiate(overlay, position, Quaternion.identity, overlayObjectHolder);
     }
 }
