@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : Entity {
 
     private GameObject objectToUseActionOn;
+    private List<Tile> tilesToMove = new List<Tile>();
 
     public override bool act() {
         switch (state) {
@@ -25,8 +26,11 @@ public class Player : Entity {
             case EntityState.WAIT_FOR_MENU_SELECTION:
                 handleWaitForMenuSelection();
                 break;
-            case EntityState.MOVEMENT:
-                handleMovement();
+            case EntityState.CALCULATE_MOVEMENT_FIELDS:
+                handleCalculateMovementFields();
+                break;
+            case EntityState.MOVE:
+                handleMove();
                 break;
             case EntityState.END_TURN:
                 commandMenu.setVisibility(false);
@@ -71,19 +75,37 @@ public class Player : Entity {
             clickedObject = null;
             levelManager.destroyOverlays();
             commandMenu.setVisibility(false);
-            state = EntityState.MOVEMENT;
+            state = EntityState.CALCULATE_MOVEMENT_FIELDS;
             return;
         }
     }
 
-    private bool handleMovement() {
-        print(objectToUseActionOn.transform.position);
-        state = EntityState.SHOW_POSSIBLE_MOVES;
+    private void handleCalculateMovementFields() {
+        Tile tile = objectToUseActionOn.GetComponent<Tile>();
+        tilesToMove.Clear();
+        objectToUseActionOn = null;
 
-        // state movement 
-        // move player to target position
-        // subtract moves from actions
-        // switch state to choose action
-        return true;
+        tilesToMove.Add(tile);
+        while ((tile = movableTiles[tile].Key) != null)
+            tilesToMove.Insert(0, tile);
+        state = EntityState.MOVE;
+    }
+
+    private void handleMove() {
+        if (tilesToMove.Count == 0) {
+            state = EntityState.SHOW_POSSIBLE_MOVES;
+            return;
+        }
+        Vector2 tileToMoveToPos = tilesToMove[0].transform.position;
+        if (Vector2.Distance(transform.position, tileToMoveToPos) <= 0.1f) {
+            transform.position = tileToMoveToPos;
+            moves--;
+            x = (int)transform.position.x;
+            y = (int)transform.position.y;
+            tilesToMove.RemoveAt(0);
+        }
+        else {
+            transform.position = Vector2.MoveTowards(transform.position, tileToMoveToPos, 0.04f);
+        }
     }
 }
