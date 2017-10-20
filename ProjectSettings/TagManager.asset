@@ -50,3 +50,9 @@ TagManager:
   - name: Player
     uniqueID: 1024231357
     locked: 0
+  - name: Overlay
+    uniqueID: 1500531469
+    locked: 0
+  - name: CommandMenu
+    uniqueID: 2580969613
+    locked: 0

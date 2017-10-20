@@ -2,6 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Blocker : Clickable {
+public class Zombie : Mob {
 
 }

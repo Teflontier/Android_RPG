@@ -10,6 +10,9 @@ public class DDOL : MonoBehaviour {
     public List<Tile> tiles;
     public List<Blocker> blockers;
     public List<Player> players;
+    public List<Mob> mobs;
+
+    public GameObject greenOverlay;
 
     public void Awake() {
         DontDestroyOnLoad(gameObject);

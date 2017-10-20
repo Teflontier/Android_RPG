@@ -7,16 +7,17 @@ public class GameManager : MonoBehaviour {
 
     public enum GameState {
         INITIALIZE,
-		STORY,
-        ACT,
-        ANIMATION
+        STORY,
+        ACT
     }
 
     private DDOL ddol;
     private LevelManager levelManager;
     private GameState state = GameState.INITIALIZE;
+    private bool storyEnded = true;
     private List<Player> players = new List<Player>();
-	private bool storyEnded = true;
+    private List<Mob> mobs = new List<Mob>();
+    private List<Entity> turnList = new List<Entity>();
 
     public void Awake() {
         ddol = GameObject.FindObjectOfType<DDOL>();
@@ -26,36 +27,52 @@ public class GameManager : MonoBehaviour {
     public void startGame() {
         createPlayers();
         levelManager.createLevel(players);
-        state = GameState.ACT;
+        resetTurnList();
+        state = GameState.STORY;
     }
 
     private void createPlayers() {
-        players.Add(GameObject.Instantiate(ddol.players[0].gameObject).GetComponent<Player>());
+        // the players should actually be created by some sort of ui and be chosen by the gamer
+        Player player = GameObject.Instantiate(ddol.players[0].gameObject).GetComponent<Player>();
+        Camera.main.transform.SetParent(player.gameObject.transform);
+        players.Add(player);
+    }
+
+    private void resetTurnList() {
+        turnList.Clear();
+        foreach (Player player in players)
+            turnList.Insert(0, player);
+        bool addedToTheEnd = false;
+        for (int i = 0; i < mobs.Count; i++) {
+            int index = i * 2 + 1;
+            if (turnList.Count >= index && !addedToTheEnd)
+                turnList.Insert(index, mobs[i]);
+            else {
+                turnList.Add(mobs[i]);
+                addedToTheEnd = true;
+            }
+        }
+    }
+
+    public void objectWasClicked(GameObject obj) {
+        turnList[0].clickedObject = obj;
     }
 
     public void Update() {
+        Entity activeEntity = turnList[0];
         switch (state) {
             case GameState.INITIALIZE:
                 break;
-			case GameState.STORY:
-				if(storyEnded)
-					state = GameState.ACT;
-				break;
-            case GameState.ACT:
-                bool allPlayersDoneActing = true;
-                foreach (Player player in players)
-                    if (!player.act())
-                        allPlayersDoneActing = false;
-                if (allPlayersDoneActing)
-                    state = GameState.ANIMATION;
-                break;
-            case GameState.ANIMATION:
-                bool allPlayersDoneAnimating = true;
-                foreach (Player player in players)
-                    if (!player.animate())
-                        allPlayersDoneAnimating = false;
-                if (allPlayersDoneAnimating)
+            case GameState.STORY:
+                if (storyEnded)
                     state = GameState.ACT;
+                break;
+            case GameState.ACT:
+                if (!activeEntity.act())
+                    break;
+                turnList.Remove(activeEntity);
+                turnList.Add(activeEntity);
+                activeEntity.state = Entity.EntityState.INITIALIZE;
                 break;
         }
     }
