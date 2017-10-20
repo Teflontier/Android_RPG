@@ -81,6 +81,7 @@ public class Player : Entity {
 
     private void handleCalculateMovementFields() {
         Tile tile = objectToUseActionOn.GetComponent<Tile>();
+        print(tile);
         tilesToMove.Clear();
         objectToUseActionOn = null;
 

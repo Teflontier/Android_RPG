@@ -50,7 +50,9 @@ public abstract class Entity : Clickable {
         if (moves == 0)
             return;
 
-        tilesToCheck.AddRange(getSurroundingMovableTilesNotMarked((int)transform.position.x, (int)transform.position.y, moves, null));
+        Vector2 startingPos = LevelManager.getIndicesFor(transform.position);
+        Tile startingTile = levelManager.tileMatrix[(int)startingPos.x, (int)startingPos.y];
+        tilesToCheck.AddRange(getSurroundingMovableTilesNotMarked(moves, startingTile));
 
         while (tilesToCheck.Count > 0) {
             Tile tileToCheck = tilesToCheck[0];
@@ -58,40 +60,23 @@ public abstract class Entity : Clickable {
             tilesToCheck.RemoveAt(0);
             int movesLeft = movableTiles[tileToCheck].Value - 1;
             if (movesLeft > 0)
-                tilesToCheck.AddRange(getSurroundingMovableTilesNotMarked((int)tilePos.x, (int)tilePos.y, movesLeft, tileToCheck));
+                tilesToCheck.AddRange(getSurroundingMovableTilesNotMarked(movesLeft, tileToCheck));
         }
-
         foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in movableTiles)
             levelManager.createOverlay(ddol.greenOverlay, pair.Key.transform.position);
     }
 
-    private List<Tile> getSurroundingMovableTilesNotMarked(int x, int y, int movesLeft, Tile prevTile) {
+    private List<Tile> getSurroundingMovableTilesNotMarked(int movesLeft, Tile centerTile) {
         List<Tile> surroundingTiles = new List<Tile>();
-        Tile tile = levelManager.getTileAtPosition(x - 1, y);
-        if (isMovable(tile) && !movableTiles.ContainsKey(tile)) {
-            surroundingTiles.Add(tile);
-            movableTiles.Add(tile, new KeyValuePair<Tile, int>(prevTile, movesLeft));
-        }
-        tile = levelManager.getTileAtPosition(x + 1, y);
-        if (isMovable(tile) && !movableTiles.ContainsKey(tile)) {
-            surroundingTiles.Add(tile);
-            movableTiles.Add(tile, new KeyValuePair<Tile, int>(prevTile, movesLeft));
-        }
-        tile = levelManager.getTileAtPosition(x, y - 1);
-        if (isMovable(tile) && !movableTiles.ContainsKey(tile)) {
-            surroundingTiles.Add(tile);
-            movableTiles.Add(tile, new KeyValuePair<Tile, int>(prevTile, movesLeft));
-        }
-        tile = levelManager.getTileAtPosition(x, y + 1);
-        if (isMovable(tile) && !movableTiles.ContainsKey(tile)) {
-            surroundingTiles.Add(tile);
-            movableTiles.Add(tile, new KeyValuePair<Tile, int>(prevTile, movesLeft));
-        }
+        centerTile.getSurroundingTiles().FindAll(tile => isMovable(tile) && !movableTiles.ContainsKey(tile)).ForEach(tile => {
+                surroundingTiles.Add(tile);
+                movableTiles.Add(tile, new KeyValuePair<Tile, int>(centerTile, movesLeft));
+            });
         return surroundingTiles;
     }
 
     private bool isMovable(Tile tile) {
-        if(tile == null)
+        if (tile == null)
             return false;
         Vector2 pos = tile.transform.position;
         return getGameObjectOnTile(tile) == null;
