@@ -25,7 +25,7 @@ public abstract class Player : MonoBehaviour {
 
 		switch (state) {
 		case PlayerState.CHOOSE_ACTION:
-			showPossibleMoves (); // zeige freie felder grün an, felder mit blockern orange, felder mit gegnern rot
+			showPossibleMoves (); // zeige freie felder grün an, felder mit blockern orange (oder transparent), felder mit gegnern rot
 			checkIfSomethingClicked ();
 			if (tileWasClicked ())
 				state = PlayerState.MOVEMENT;

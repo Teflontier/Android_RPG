@@ -51,8 +51,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Prefabs\Monster\Monster 1.cs" />
      <Compile Include="Assets\Scripts\Blockers\Blocker.cs" />
      <Compile Include="Assets\Scripts\Blockers\Wall.cs" />
+     <Compile Include="Assets\Scripts\Buffs-Debuff\Vergiftet.cs" />
      <Compile Include="Assets\Scripts\DDOL.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\LevelManager.cs" />
@@ -61,6 +63,7 @@
      <Compile Include="Assets\Scripts\Tiles\Gras.cs" />
      <Compile Include="Assets\Scripts\Tiles\Land.cs" />
      <Compile Include="Assets\Scripts\Tiles\Tile.cs" />
+     <Compile Include="Assets\Scripts\Würfel\Würfel.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
