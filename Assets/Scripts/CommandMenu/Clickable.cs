@@ -1,17 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Button : MonoBehaviour {
+public class Clickable : MonoBehaviour, IPointerDownHandler {
 
     protected GameManager gameManager;
 
-    public void Awake() {
+    public virtual void Awake() {
         gameManager = GameObject.FindObjectOfType<GameManager>();
-        GetComponent<MeshRenderer>().sortingLayerName = "CommandMenu";
     }
 
-    public void OnMouseDown() {
+    public void OnPointerDown(PointerEventData eventData) {
         gameManager.objectWasClicked(gameObject);
     }
 }

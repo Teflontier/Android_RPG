@@ -10,9 +10,14 @@ public class LevelManager : MonoBehaviour {
     public int minBlockers = 5;
     public int maxBlockers = 9;
 
-    [HideInInspector] public Tile[,] tiles = new Tile[width, height];
-    [HideInInspector] public Blocker[,] blockers = new Blocker[width, height];
-    [HideInInspector] public Entity[,] entities = new Entity[width, height];
+    public int minTileX;
+    public int maxTileX;
+    public int minTileY;
+    public int maxTileY;
+
+    [HideInInspector] public List<Tile> tiles = new List<Tile>();
+    [HideInInspector] public List<Blocker> blockers = new List<Blocker>();
+    [HideInInspector] public List<Entity> entities = new List<Entity>();
 
     private DDOL ddol;
     private Transform playerObjectHolder;
@@ -34,6 +39,8 @@ public class LevelManager : MonoBehaviour {
         destroyLevel();
         createTiles();
         createBlockers();
+        entities.Clear();
+        playersToPlace.ForEach(player => entities.Add(player));
         createPlayers(playersToPlace);
     }
 
@@ -48,20 +55,20 @@ public class LevelManager : MonoBehaviour {
             Destroy(child.gameObject);
         foreach (Transform child in overlayObjectHolder)
             Destroy(child.gameObject);
-        for (int i = 0; i < width; i++) {
-            for (int k = 0; k < height; k++) {
-                tiles[i, k] = null;
-                blockers[i, k] = null;
-                entities[i, k] = null;
-            }
-        }
+        tiles.Clear();
+        blockers.Clear();
+        entities.Clear();
     }
 
     private void createTiles() {
+        minTileX = 0;
+        maxTileX = width - 1;
+        minTileY = 0;
+        maxTileY = height - 1;
         for (int i = 0; i < width; i++) {
             for (int k = 0; k < height; k++) {
                 Tile tile = GameObject.Instantiate(ddol.tiles[Random.Range(0, ddol.tiles.Count)], new Vector2(i, k), Quaternion.identity, tileObjectHolder) as Tile;
-                tiles[i, k] = tile;
+                tiles.Add(tile);
             }
         }
     }
@@ -69,16 +76,14 @@ public class LevelManager : MonoBehaviour {
     private void createBlockers() {
         for (int i = 0; i < Random.Range(minBlockers, maxBlockers); i++) {
             Vector2 coordinates = getRandomCoordinatesWithoutBlocker();
-            Blocker blocker = GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], coordinates, Quaternion.identity, blockerObjectHolder) as Blocker;
-            blockers[(int)coordinates.x, (int)coordinates.y] = blocker;
+            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], coordinates, Quaternion.identity, blockerObjectHolder) as Blocker);
         }
     }
 
     private void createPlayers(List<Player> playersToPlace) {
         foreach (Player player in playersToPlace) {
             player.transform.SetParent(playerObjectHolder);
-            Vector2 coordinates = getRandomCoordinatesWithoutBlocker();
-            teleportEntity(player, (int)coordinates.x, (int)coordinates.y);
+            player.transform.position = getRandomCoordinatesWithoutBlocker();
         }
     }
 
@@ -88,34 +93,13 @@ public class LevelManager : MonoBehaviour {
 
     private Vector2 getRandomCoordinatesWithoutBlocker() {
         Vector2 coordinates = getRandomCoordinates();
-        while (blockers[(int)coordinates.x, (int)coordinates.y] != null)
+        while (blockers.Find(blocker => blocker.transform.position.Equals(coordinates)) != null)
             coordinates = getRandomCoordinates();
         return coordinates;
     }
 
-    public bool moveEntity(Entity entity, int x, int y) {
-        if (x < 0 || x > width - 1 || y < 0 || y > height - 1)
-            return false;
-        if (blockers[x, y] != null || entities[x, y] != null)
-            return false;
-        entities[entity.x, entity.y] = null;
-        entities[x, y] = entity;
-        entity.x = x;
-        entity.y = y;
-        return true;
-    }
-
-    public bool teleportEntity(Entity entity, int x, int y) {
-        if (x < 0 || x > width - 1 || y < 0 || y > height - 1)
-            return false;
-        if (blockers[x, y] != null || entities[x, y] != null)
-            return false;
-        entities[entity.x, entity.y] = null;
-        entities[x, y] = entity;
-        entity.x = x;
-        entity.y = y;
-        entity.transform.position = new Vector2(entity.x, entity.y);
-        return true;
+    public Tile getTileAtPosition(int x, int y) {
+        return tiles.Find(tile => ((Vector2)tile.transform.position).Equals(new Vector2(x, y)));
     }
 
     public void createOverlay(GameObject overlay, Vector2 position) {

@@ -2,15 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Blocker : MonoBehaviour {
+public abstract class Blocker : Clickable {
 
-    protected GameManager gameManager;
-
-    public void Awake() {
-        gameManager = GameObject.FindObjectOfType<GameManager>();
-    }
-
-    public void OnMouseDown(){
-        gameManager.objectWasClicked(gameObject);
-    }
 }

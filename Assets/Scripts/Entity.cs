@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Entity : MonoBehaviour {
+public abstract class Entity : Clickable {
 
     public enum EntityState {
         INITIALIZE,
@@ -17,8 +17,6 @@ public abstract class Entity : MonoBehaviour {
 
     public int maxHp;
     public int maxMoves = 3;
-    public int x;
-    public int y;
 
     public EntityState state = EntityState.INITIALIZE;
     public GameObject clickedObject;
@@ -29,10 +27,10 @@ public abstract class Entity : MonoBehaviour {
 
     protected DDOL ddol;
     protected LevelManager levelManager;
-    protected GameManager gameManager;
     protected CommandMenu commandMenu;
 
-    public void Awake() {
+    public override void Awake() {
+        base.Awake();
         ddol = GameObject.FindObjectOfType<DDOL>();
         levelManager = GameObject.FindObjectOfType<LevelManager>();
         gameManager = GameObject.FindObjectOfType<GameManager>();
@@ -52,7 +50,7 @@ public abstract class Entity : MonoBehaviour {
         if (moves == 0)
             return;
 
-        tilesToCheck.AddRange(getSurroundingMovableTilesNotMarked(x, y, moves, null));
+        tilesToCheck.AddRange(getSurroundingMovableTilesNotMarked((int)transform.position.x, (int)transform.position.y, moves, null));
 
         while (tilesToCheck.Count > 0) {
             Tile tileToCheck = tilesToCheck[0];
@@ -69,45 +67,43 @@ public abstract class Entity : MonoBehaviour {
 
     private List<Tile> getSurroundingMovableTilesNotMarked(int x, int y, int movesLeft, Tile prevTile) {
         List<Tile> surroundingTiles = new List<Tile>();
-        Tile temp;
-        if (x - 1 >= 0 && isMovable(temp = levelManager.tiles[x - 1, y]) && !movableTiles.ContainsKey(temp)) {
-            surroundingTiles.Add(temp);
-            movableTiles.Add(temp, new KeyValuePair<Tile, int>(prevTile, movesLeft));
+        Tile tile = levelManager.getTileAtPosition(x - 1, y);
+        if (isMovable(tile) && !movableTiles.ContainsKey(tile)) {
+            surroundingTiles.Add(tile);
+            movableTiles.Add(tile, new KeyValuePair<Tile, int>(prevTile, movesLeft));
         }
-        if (x + 1 < levelManager.tiles.GetLength(0) && isMovable(temp = levelManager.tiles[x + 1, y]) && !movableTiles.ContainsKey(temp)) {
-            surroundingTiles.Add(temp);
-            movableTiles.Add(temp, new KeyValuePair<Tile, int>(prevTile, movesLeft));
+        tile = levelManager.getTileAtPosition(x + 1, y);
+        if (isMovable(tile) && !movableTiles.ContainsKey(tile)) {
+            surroundingTiles.Add(tile);
+            movableTiles.Add(tile, new KeyValuePair<Tile, int>(prevTile, movesLeft));
         }
-        if (y - 1 >= 0 && isMovable(temp = levelManager.tiles[x, y - 1]) && !movableTiles.ContainsKey(temp)) {
-            surroundingTiles.Add(temp);
-            movableTiles.Add(temp, new KeyValuePair<Tile, int>(prevTile, movesLeft));
+        tile = levelManager.getTileAtPosition(x, y - 1);
+        if (isMovable(tile) && !movableTiles.ContainsKey(tile)) {
+            surroundingTiles.Add(tile);
+            movableTiles.Add(tile, new KeyValuePair<Tile, int>(prevTile, movesLeft));
         }
-        if (y + 1 < levelManager.tiles.GetLength(1) && isMovable(temp = levelManager.tiles[x, y + 1]) && !movableTiles.ContainsKey(temp)) {
-            surroundingTiles.Add(temp);
-            movableTiles.Add(temp, new KeyValuePair<Tile, int>(prevTile, movesLeft));
+        tile = levelManager.getTileAtPosition(x, y + 1);
+        if (isMovable(tile) && !movableTiles.ContainsKey(tile)) {
+            surroundingTiles.Add(tile);
+            movableTiles.Add(tile, new KeyValuePair<Tile, int>(prevTile, movesLeft));
         }
         return surroundingTiles;
     }
 
     private bool isMovable(Tile tile) {
-        Vector2 pos = tile.transform.position;
-        return levelManager.blockers[(int)pos.x, (int)pos.y] == null && levelManager.entities[(int)pos.x, (int)pos.y] == null;
-    }
-
-    public bool animate() {
-        Vector2 currentPosition = transform.position;
-        Vector2 targetPosition = new Vector2(x, y);
-        if (currentPosition != targetPosition) {
-            if (Vector2.Distance(currentPosition, targetPosition) < 0.03f)
-                transform.position = targetPosition;
-            else
-                transform.position = Vector2.Lerp(currentPosition, targetPosition, 0.1f);
+        if(tile == null)
             return false;
-        }
-        return true;
+        Vector2 pos = tile.transform.position;
+        return getGameObjectOnTile(tile) == null;
     }
 
-    public void OnMouseDown() {
-        gameManager.objectWasClicked(gameObject);
+    public GameObject getGameObjectOnTile(Tile tile) {
+        Blocker blocker = levelManager.blockers.Find(b => b.transform.position.Equals(tile.transform.position));
+        if (blocker != null)
+            return blocker.gameObject;
+        Entity entity = levelManager.entities.Find(e => e.transform.position.Equals(tile.transform.position));
+        if (entity != null)
+            return entity.gameObject;
+        return null;
     }
 }

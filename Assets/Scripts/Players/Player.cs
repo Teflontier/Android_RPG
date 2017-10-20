@@ -31,6 +31,7 @@ public class Player : Entity {
                 break;
             case EntityState.MOVE:
                 handleMove();
+                clickedObject = null;
                 break;
             case EntityState.END_TURN:
                 commandMenu.setVisibility(false);
@@ -62,16 +63,14 @@ public class Player : Entity {
     private void handleWaitForMenuSelection() {
         if (clickedObject == null)
             return;
-        End endButton = clickedObject.GetComponent<End>();
-        if (endButton != null) {
+        if (clickedObject.name.Equals("End")) {
             clickedObject = null;
             levelManager.destroyOverlays();
             commandMenu.setVisibility(false);
             state = EntityState.END_TURN;
             return;
         }
-        Move moveButton = clickedObject.GetComponent<Move>();
-        if (moveButton != null) {
+        if (clickedObject.name.Equals("Move")) {
             clickedObject = null;
             levelManager.destroyOverlays();
             commandMenu.setVisibility(false);
@@ -97,15 +96,13 @@ public class Player : Entity {
             return;
         }
         Vector2 tileToMoveToPos = tilesToMove[0].transform.position;
-        if (Vector2.Distance(transform.position, tileToMoveToPos) <= 0.1f) {
+        if (Vector2.Distance(transform.position, tileToMoveToPos) <= 0.05f) {
             transform.position = tileToMoveToPos;
             moves--;
-            x = (int)transform.position.x;
-            y = (int)transform.position.y;
             tilesToMove.RemoveAt(0);
         }
         else {
-            transform.position = Vector2.MoveTowards(transform.position, tileToMoveToPos, 0.04f);
+            transform.position = Vector2.MoveTowards(transform.position, tileToMoveToPos, 3f * Time.deltaTime);
         }
     }
 }

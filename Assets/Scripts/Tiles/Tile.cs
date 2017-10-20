@@ -2,16 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Tile : MonoBehaviour{
-
-    protected GameManager gameManager;
-
-    public void Awake() {
-        gameManager = GameObject.FindObjectOfType<GameManager>();
-    }
-
-    public void OnMouseDown(){
-        gameManager.objectWasClicked(gameObject);
-    }
+public abstract class Tile : Clickable {
 
 }
