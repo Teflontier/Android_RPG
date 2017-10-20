@@ -67,7 +67,12 @@ public class LevelManager : MonoBehaviour {
         maxTileY = height - 1;
         for (int i = 0; i < width; i++) {
             for (int k = 0; k < height; k++) {
-                Tile tile = GameObject.Instantiate(ddol.tiles[Random.Range(0, ddol.tiles.Count)], new Vector2(i, k), Quaternion.identity, tileObjectHolder) as Tile;
+                Vector2 pos = new Vector2(i, k);
+                if(k % 2 != 0){
+                    pos.x += 0.5f;
+                }
+                pos.y -= 0.25f * k;
+                Tile tile = GameObject.Instantiate(ddol.tiles[Random.Range(0, ddol.tiles.Count)], pos, Quaternion.identity, tileObjectHolder) as Tile;
                 tiles.Add(tile);
             }
         }
