@@ -2,87 +2,107 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Player : MonoBehaviour {
+public class Player : Entity {
 
-	public enum PlayerState{
-		CHOOSE_ACTION, MOVEMENT, END_TURN
-	}
+    private GameObject objectToUseActionOn;
+    private List<Tile> tilesToMove = new List<Tile>();
 
-	public int maxHp;
-	public int x;
-	public int y;
-
-	private PlayerState state;
-    private LevelManager levelManager;
-    private int moves = 2;
-
-    public void Awake() {
-        levelManager = GameObject.FindObjectOfType<LevelManager>();
-    }
-	//--------------------------playeractions-----------------------------
-    public bool act() {
-		state = PlayerState.CHOOSE_ACTION;
-
-		switch (state) {
-		case PlayerState.CHOOSE_ACTION:
-			showPossibleMoves (); // zeige freie felder grün an, felder mit blockern orange (oder transparent), felder mit gegnern rot
-			checkIfSomethingClicked ();
-			if (tileWasClicked ())
-				state = PlayerState.MOVEMENT;
-			if(endTurnWasClicked())
-				state = PlayerState.END_TURN;
-			break;
-
-		case PlayerState.MOVEMENT: // man kann nicht auf ein feld gehen, wo sich verbündete befinden
-		// state movement 
-		// move player to target position
-		// subtract moves from actions
-		// switch state to choose action
-			break;
-		}
-
-
-
-
-
-        int movesBefore = moves;
-        if (Input.GetKey(KeyCode.A) && levelManager.movePlayer(this, x - 1, y))
-            moves--;
-        else if (Input.GetKey(KeyCode.D) && levelManager.movePlayer(this, x + 1, y))
-            moves--;
-        else if (Input.GetKey(KeyCode.S) && levelManager.movePlayer(this, x, y - 1))
-            moves--;
-        else if (Input.GetKey(KeyCode.W) && levelManager.movePlayer(this, x, y + 1))
-            moves--;
-        return moves != movesBefore;
-    }
-
-    public bool animate() {
-        Vector2 currentPosition = transform.position;
-        Vector2 targetPosition = new Vector2(x, y);
-        if (currentPosition != targetPosition) {
-            if (Vector2.Distance(currentPosition, targetPosition) < 0.03f)
-                transform.position = targetPosition;
-            else
-                transform.position = Vector2.Lerp(currentPosition, targetPosition, 0.1f);
-            return false;
+    public override bool act() {
+        switch (state) {
+            case EntityState.INITIALIZE:
+                initialize();
+                state = EntityState.SHOW_POSSIBLE_MOVES;
+                break;
+            case EntityState.SHOW_POSSIBLE_MOVES:
+                calcPossibleMoves();
+                state = EntityState.WAIT_FOR_ACTION;
+                break;
+            case EntityState.WAIT_FOR_ACTION:
+                handleWaitForAction();
+                break;
+            case EntityState.CREATE_COMMAND_MENU:
+                handleCreateCommandMenu();
+                break;
+            case EntityState.WAIT_FOR_MENU_SELECTION:
+                handleWaitForMenuSelection();
+                break;
+            case EntityState.CALCULATE_MOVEMENT_FIELDS:
+                handleCalculateMovementFields();
+                break;
+            case EntityState.MOVE:
+                handleMove();
+                clickedObject = null;
+                break;
+            case EntityState.END_TURN:
+                commandMenu.setVisibility(false);
+                return true;
         }
-        return true;
+        return false;
     }
 
-	private void showPossibleMoves(){
+    private void handleWaitForAction() {
+        if (clickedObject == null)
+            return;
 
-	}
+        objectToUseActionOn = clickedObject;
+        clickedObject = null;
+        state = EntityState.CREATE_COMMAND_MENU;
+    }
 
-	private void checkIfSomethingClicked(){
+    private void handleCreateCommandMenu() {
+        commandMenu.setVisibility(false);
+        Vector2 clickedPos = objectToUseActionOn.transform.position;
+        commandMenu.transform.position = new Vector2(clickedPos.x, clickedPos.y + 1);
+        Tile tile = objectToUseActionOn.GetComponent<Tile>();
+        if (tile != null && movableTiles.ContainsKey(tile))
+            commandMenu.setMoveVisibility(true);
+        commandMenu.setEndVisibility(true);
+        state = EntityState.WAIT_FOR_MENU_SELECTION;
+    }
 
-	}
+    private void handleWaitForMenuSelection() {
+        if (clickedObject == null)
+            return;
+        if (clickedObject.name.Equals("End")) {
+            clickedObject = null;
+            levelManager.destroyOverlays();
+            commandMenu.setVisibility(false);
+            state = EntityState.END_TURN;
+            return;
+        }
+        if (clickedObject.name.Equals("Move")) {
+            clickedObject = null;
+            levelManager.destroyOverlays();
+            commandMenu.setVisibility(false);
+            state = EntityState.CALCULATE_MOVEMENT_FIELDS;
+            return;
+        }
+    }
 
-	private bool tileWasClicked(){
-		return false;
-	}
+    private void handleCalculateMovementFields() {
+        Tile tile = objectToUseActionOn.GetComponent<Tile>();
+        tilesToMove.Clear();
+        objectToUseActionOn = null;
 
-	private bool endTurnWasClicked(){
-		return false;
-	}
+        tilesToMove.Add(tile);
+        while ((tile = movableTiles[tile].Key) != null)
+            tilesToMove.Insert(0, tile);
+        state = EntityState.MOVE;
+    }
+
+    private void handleMove() {
+        if (tilesToMove.Count == 0) {
+            state = EntityState.SHOW_POSSIBLE_MOVES;
+            return;
+        }
+        Vector2 tileToMoveToPos = tilesToMove[0].transform.position;
+        if (Vector2.Distance(transform.position, tileToMoveToPos) <= 0.05f) {
+            transform.position = tileToMoveToPos;
+            moves--;
+            tilesToMove.RemoveAt(0);
+        }
+        else {
+            transform.position = Vector2.MoveTowards(transform.position, tileToMoveToPos, 3f * Time.deltaTime);
+        }
+    }
 }
