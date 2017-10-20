@@ -10,8 +10,6 @@ public class CommandMenu : MonoBehaviour {
     public void Awake(){
         moveButton = transform.Find("Move").gameObject;
         endButton = transform.Find("End").gameObject;
-        moveButton.GetComponent<MeshRenderer>().sortingLayerName = "CommandMenu";
-        endButton.GetComponent<MeshRenderer>().sortingLayerName = "CommandMenu";
     }
 
     public void setVisibility(bool visible){

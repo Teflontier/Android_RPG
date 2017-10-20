@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4216149404975814}
   - component: {fileID: 212557140150485266}
   - component: {fileID: 114900680083413404}
-  - component: {fileID: 61626261772151414}
+  - component: {fileID: 60685841406641274}
   m_Layer: 0
   m_Name: Wall
   m_TagString: Untagged
@@ -42,8 +42,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &61626261772151414
-BoxCollider2D:
+--- !u!60 &60685841406641274
+PolygonCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -64,9 +64,12 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.5, y: 0.5}
+      - {x: -0.5, y: -0.5}
+      - {x: 0.5, y: -0.5}
+      - {x: 0.5, y: 0.5}
 --- !u!114 &114900680083413404
 MonoBehaviour:
   m_ObjectHideFlags: 1
