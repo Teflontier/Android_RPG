@@ -73,6 +73,10 @@ public class Player : Entity {
     private void handleWaitForMenuSelection() {
         if (clickedObject == null)
             return;
+        if (clickedObject.GetComponent<Tile>() != null) {
+            handleWaitForAction();
+            return;
+        }
         lastMenuClicked = clickedObject;
         clickedObject = null;
         if (lastMenuClicked.name.Equals(END)) {
