@@ -142,7 +142,8 @@ MonoBehaviour:
   - {fileID: 114900680083413404, guid: ef4c6863722026b4a8fb16e10a7d96a6, type: 2}
   players:
   - {fileID: 114518558083096532, guid: 1b81f83a722f1b34fa38ece0590a09ca, type: 2}
-  mobs: []
+  mobs:
+  - {fileID: 114261917140499202, guid: 5272d53d65ac1a548b4aa35923bf71f9, type: 2}
   greenOverlay: {fileID: 1445447123753010, guid: dcd242b20883e1645936947392ce76de,
     type: 2}
 --- !u!4 &245313916
@@ -206,7 +207,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad89c1bad6fee2245b72092de0b39daa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minBlockers: 5
+  width: 8
+  height: 8
+  minBlockers: 6
   maxBlockers: 9
   minTileX: 0
   maxTileX: 0

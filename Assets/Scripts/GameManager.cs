@@ -40,6 +40,14 @@ public class GameManager : MonoBehaviour {
 
     private void resetTurnList() {
         turnList.Clear();
+        players.Clear();
+        mobs.Clear();
+        levelManager.entities.ForEach(entity => {
+                if (entity is Player)
+                    players.Add((Player)entity);
+                if (entity is Mob)
+                    mobs.Add((Mob)entity);
+            });
         foreach (Player player in players)
             turnList.Insert(0, player);
         bool addedToTheEnd = false;

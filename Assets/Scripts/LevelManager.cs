@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour {
 
-    public static int width = 8;
-    public static int height = 8;
+    public int width = 2;
+    public int height = 2;
 
-    public int minBlockers = 5;
-    public int maxBlockers = 9;
+    public int minBlockers = 0;
+    public int maxBlockers = 0;
 
-    public int minTileX;
-    public int maxTileX;
-    public int minTileY;
-    public int maxTileY;
+    [HideInInspector] public int minTileX;
+    [HideInInspector] public int maxTileX;
+    [HideInInspector] public int minTileY;
+    [HideInInspector] public int maxTileY;
 
     [HideInInspector] public List<Tile> tiles = new List<Tile>();
     [HideInInspector] public List<Blocker> blockers = new List<Blocker>();
     [HideInInspector] public List<Entity> entities = new List<Entity>();
-    [HideInInspector] public Tile[,] tileMatrix = new Tile[width, height];
+    [HideInInspector] public Tile[,] tileMatrix;
 
     private DDOL ddol;
     private Transform playerObjectHolder;
@@ -34,6 +34,7 @@ public class LevelManager : MonoBehaviour {
         tileObjectHolder = transform.Find("Tiles");
         blockerObjectHolder = transform.Find("Blockers");
         overlayObjectHolder = transform.Find("Overlays");
+        tileMatrix = new Tile[width, height];
     }
 
     public void createLevel(List<Player> playersToPlace) {
@@ -43,6 +44,7 @@ public class LevelManager : MonoBehaviour {
         entities.Clear();
         playersToPlace.ForEach(player => entities.Add(player));
         createPlayers(playersToPlace);
+        createMobs();
     }
 
     private void destroyLevel() {
@@ -113,7 +115,7 @@ public class LevelManager : MonoBehaviour {
 
     private void createBlockers() {
         for (int i = 0; i < Random.Range(minBlockers, maxBlockers); i++) {
-            Vector2 coordinates = getRandomCoordinatesWithoutBlocker();
+            Vector2 coordinates = getRandomFreeTileCoordinates();
             blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], coordinates, Quaternion.identity, blockerObjectHolder) as Blocker);
         }
     }
@@ -121,19 +123,34 @@ public class LevelManager : MonoBehaviour {
     private void createPlayers(List<Player> playersToPlace) {
         foreach (Player player in playersToPlace) {
             player.transform.SetParent(playerObjectHolder);
-            player.transform.position = getRandomCoordinatesWithoutBlocker();
+            player.transform.position = getRandomFreeTileCoordinates();
         }
+    }
+
+    private void createMobs() {
+        Vector2 coordinates = getRandomFreeTileCoordinates();
+        entities.Add(GameObject.Instantiate(ddol.mobs[Random.Range(0, ddol.mobs.Count)], coordinates, Quaternion.identity, mobObjectHolder) as Mob);
     }
 
     private Vector2 getRandomCoordinates() {
         return getCoordinatesFor(Random.Range(0, width), Random.Range(0, height));
     }
 
-    private Vector2 getRandomCoordinatesWithoutBlocker() {
-        Vector2 coordinates = getRandomCoordinates();
-        while (blockers.Find(blocker => blocker.transform.position.Equals(coordinates)) != null)
+    private Vector2 getRandomFreeTileCoordinates() {
+        Vector2 coordinates;
+        int stop = 0;
+        while (true) {
             coordinates = getRandomCoordinates();
-        return coordinates;
+            Blocker b = blockers.Find(blocker => ((Vector2)blocker.transform.position).Equals(coordinates));
+            Entity e = entities.Find(entity => ((Vector2)entity.transform.position).Equals(coordinates));
+            bool isEmpty = b == null && e == null;
+            if (isEmpty)
+                return coordinates;
+            stop++;
+            if (stop >= 1000)
+                break;
+        }
+        return new Vector2(0, 0);
     }
 
     public void createOverlay(GameObject overlay, Vector2 position) {
