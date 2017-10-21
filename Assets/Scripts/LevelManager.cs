@@ -82,19 +82,33 @@ public class LevelManager : MonoBehaviour {
                     tile.left = tileMatrix[i - 1, k];
                 if (i + 1 < width)
                     tile.right = tileMatrix[i + 1, k];
-                if (k + 1 < height) {
-                    tile.topRight = tileMatrix[i, k + 1];
-                    if (i - 1 >= 0)
-                        tile.topLeft = tileMatrix[i - 1, k + 1];
+
+                if (k % 2 == 0) {
+                    if (k + 1 < height) {
+                        tile.topRight = tileMatrix[i, k + 1];
+                        if (i - 1 >= 0)
+                            tile.topLeft = tileMatrix[i - 1, k + 1];
+                    }
+                    if (k - 1 > 0) {
+                        tile.bottomRight = tileMatrix[i, k - 1];
+                        if (i - 1 >= 0)
+                            tile.bottomLeft = tileMatrix[i - 1, k - 1];
+                    }
                 }
-                if (k - 1 > 0) {
-                    tile.bottomRight = tileMatrix[i, k - 1];
-                    if (i - 1 >= 0)
-                        tile.bottomLeft = tileMatrix[i - 1, k - 1];
+                else {
+                    if (k + 1 < height) {
+                        tile.topLeft = tileMatrix[i, k + 1];
+                        if (i + 1 < width)
+                            tile.topRight = tileMatrix[i + 1, k + 1];
+                    }
+                    if (k - 1 >= 0) {
+                        tile.bottomLeft = tileMatrix[i, k - 1];
+                        if (i + 1 < width)
+                            tile.bottomRight = tileMatrix[i + 1, k - 1];
+                    }
                 }
             }
         }
-
     }
 
     private void createBlockers() {
@@ -143,15 +157,15 @@ public class LevelManager : MonoBehaviour {
         return getCoordinatesFor(indices.x, indices.y);
     }
 
-    public static Vector2 getIndicesFor(float posX, float posY){
+    public static Vector2 getIndicesFor(float posX, float posY) {
+        posY = posY / 0.75f;
         Vector2 pos = new Vector2(posX, posY);
         if (posY % 2 != 0)
             pos.x -= 0.5f;
-        pos.y = posY / 0.75f;
         return pos;
     }
 
-    public static Vector2 getIndicesFor(Vector2 pos){
+    public static Vector2 getIndicesFor(Vector2 pos) {
         return getIndicesFor(pos.x, pos.y);
     }
 }

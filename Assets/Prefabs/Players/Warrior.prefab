@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 0
-  maxMoves: 3
+  maxMoves: 5
   state: 0
   clickedObject: {fileID: 0}
 --- !u!212 &212903452025228488

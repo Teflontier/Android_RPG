@@ -81,13 +81,15 @@ public class Player : Entity {
 
     private void handleCalculateMovementFields() {
         Tile tile = objectToUseActionOn.GetComponent<Tile>();
-        print(tile);
         tilesToMove.Clear();
         objectToUseActionOn = null;
 
         tilesToMove.Add(tile);
-        while ((tile = movableTiles[tile].Key) != null)
+        while (movableTiles.ContainsKey(tile)) {
+            tile = movableTiles[tile].Key;
             tilesToMove.Insert(0, tile);
+        }
+        tilesToMove.RemoveAt(0);
         state = EntityState.MOVE;
     }
 
