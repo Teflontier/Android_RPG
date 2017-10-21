@@ -19,12 +19,13 @@ public abstract class Entity : Clickable {
 
     public int maxHp = 3;
     public int maxMoves = 3;
+    public int attackRange = 1;
 
     public EntityState state = EntityState.INITIALIZE;
     public GameObject clickedObject;
 
     [SerializeField] protected int hp = 3;
-    protected int moves;
+    protected int moves = 3;
     protected Dictionary<Tile, KeyValuePair<Tile, int>> movableTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
     protected Dictionary<Tile, KeyValuePair<Tile, int>> attackableTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
 

@@ -7,7 +7,7 @@ public class Player : Entity {
     private const string ATTACK = "Attack";
     private const string END = "End";
 
-    private Tile tileToUseActionOn;
+    private GameObject tileToUseActionOn;
     private GameObject lastMenuClicked;
     private List<Tile> tilesToMove = new List<Tile>();
 
@@ -52,16 +52,16 @@ public class Player : Entity {
     private void handleWaitForAction() {
         if (clickedObject == null)
             return;
-        tileToUseActionOn = clickedObject.GetComponent<Tile>();
+        tileToUseActionOn = clickedObject;
         clickedObject = null;
         state = EntityState.CREATE_COMMAND_MENU;
     }
 
     private void handleCreateCommandMenu() {
         commandMenu.setVisibility(false);
-        Vector2 clickedPos = tileToUseActionOn.gameObject.transform.position;
+        Vector2 clickedPos = tileToUseActionOn.transform.position;
         commandMenu.transform.position = new Vector2(clickedPos.x, clickedPos.y + 1);
-        Tile tile = tileToUseActionOn;
+        Tile tile = tileToUseActionOn.GetComponent<Tile>();
         if (tile != null && movableTiles.ContainsKey(tile))
             commandMenu.setMoveVisibility(true);
         if (tile != null && attackableTiles.ContainsKey(tile))
@@ -94,7 +94,7 @@ public class Player : Entity {
     }
 
     private void handleCalculateMovementFields() {
-        Tile tile = tileToUseActionOn;
+        Tile tile = tileToUseActionOn.GetComponent<Tile>();
         tilesToMove.Clear();
         if (lastMenuClicked.name.Equals(MOVE))
             tilesToMove.Add(tile);
@@ -139,7 +139,8 @@ public class Player : Entity {
     }
 
     private void handleAttack(){
-        Mob mob = levelManager.getGameObjectOnTile(tileToUseActionOn).GetComponent<Mob>();
+        Mob mob = levelManager.getGameObjectOnTile(tileToUseActionOn.GetComponent<Tile>()).GetComponent<Mob>();
+        moves--;
         mob.increaseHp(-1);
         state = EntityState.SHOW_POSSIBLE_MOVES;
     }
