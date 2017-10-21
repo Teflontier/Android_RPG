@@ -185,4 +185,30 @@ public class LevelManager : MonoBehaviour {
     public static Vector2 getIndicesFor(Vector2 pos) {
         return getIndicesFor(pos.x, pos.y);
     }
+
+    public GameObject getGameObjectOnTile(Tile tile) {
+        Blocker blocker = blockers.Find(b => b.transform.position.Equals(tile.transform.position));
+        if (blocker != null)
+            return blocker.gameObject;
+        Entity entity = entities.Find(e => e.transform.position.Equals(tile.transform.position));
+        if (entity != null)
+            return entity.gameObject;
+        return null;
+    }
+
+    public bool isMovable(Tile tile) {
+        if (tile == null)
+            return false;
+        Vector2 pos = tile.transform.position;
+        return getGameObjectOnTile(tile) == null;
+    }
+
+    public bool isAttackable(Tile tile) {
+        if (tile == null)
+            return false;
+        Vector2 pos = tile.transform.position;
+        GameObject objOnTile = getGameObjectOnTile(tile);
+        // TODO: should check for team instead of just "Mob"
+        return objOnTile != null && objOnTile.GetComponent<Mob>() != null;
+    }
 }

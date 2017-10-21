@@ -13,6 +13,7 @@ public class DDOL : MonoBehaviour {
     public List<Mob> mobs;
 
     public GameObject greenOverlay;
+    public GameObject redOverlay;
 
     public void Awake() {
         DontDestroyOnLoad(gameObject);

@@ -66,6 +66,16 @@ public class GameManager : MonoBehaviour {
         turnList[0].clickedObject = obj;
     }
 
+    public void destroyEntity(Entity entity) {
+        turnList.Remove(entity);
+        if (entity is Player)
+            players.Remove((Player)entity);
+        if (entity is Mob)
+            mobs.Remove((Mob)entity);
+        levelManager.entities.Remove(entity);
+        Destroy(entity.gameObject);
+    }
+
     public void Update() {
         Entity activeEntity = turnList[0];
         switch (state) {
