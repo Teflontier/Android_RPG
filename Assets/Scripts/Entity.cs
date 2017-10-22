@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public abstract class Entity : Clickable {
 
@@ -28,14 +29,13 @@ public abstract class Entity : Clickable {
     [SerializeField] protected int hp = 0;
     protected int moves = 0;
     protected int attacks = 0;
+    protected Dictionary<Tile, KeyValuePair<Tile, int>> floodFilledTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
     protected Dictionary<Tile, KeyValuePair<Tile, int>> movableTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
     protected Dictionary<Tile, KeyValuePair<Tile, int>> attackableTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
 
     protected DDOL ddol;
     protected LevelManager levelManager;
     protected CommandMenu commandMenu;
-
-    private int maxScanRange;
 
     public override void Awake() {
         base.Awake();
@@ -59,18 +59,15 @@ public abstract class Entity : Clickable {
         Vector2 startingPos = LevelManager.getIndicesFor(transform.position);
         Tile startingTile = levelManager.tileMatrix[(int)startingPos.x, (int)startingPos.y];
 
-        List<Tile> tilesToCheck = new List<Tile>();
-        tilesToCheck.Add(startingTile);
+        floodFill(startingTile, moves, tile => levelManager.isMovable(tile));
+        foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in floodFilledTiles)
+            movableTiles.Add(pair.Key, pair.Value);
 
-        maxScanRange = Mathf.Max(moves, attackRange);
-        int scanRange = maxScanRange;
-        while (tilesToCheck.Count > 0) {
-            Tile tileToCheck = tilesToCheck[0];
-            tilesToCheck.RemoveAt(0);
-            if (tileToCheck != startingTile)
-                scanRange = movableTiles[tileToCheck].Value - 1;
-            if (scanRange > 0)
-                tilesToCheck.AddRange(getSurroundingTilesNotMarked(scanRange, tileToCheck));
+        if (attacks > 0) {
+            floodFill(startingTile, attackRange, tile => true);
+            foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in floodFilledTiles)
+                if (levelManager.isAttackable(pair.Key))
+                    attackableTiles.Add(pair.Key, pair.Value);
         }
 
         foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in movableTiles) {
@@ -83,18 +80,26 @@ public abstract class Entity : Clickable {
                 levelManager.createOverlay(ddol.redOverlay, pair.Key.transform.position);
     }
 
-    private List<Tile> getSurroundingTilesNotMarked(int movesLeft, Tile centerTile) {
+    public void floodFill(Tile startingTile, int searchDepth, Predicate<Tile> filter) {
+        floodFilledTiles.Clear();
+        List<Tile> tilesToCheck = new List<Tile>();
+        tilesToCheck.Add(startingTile);
+
+        while (tilesToCheck.Count > 0) {
+            Tile tileToCheck = tilesToCheck[0];
+            tilesToCheck.RemoveAt(0);
+            if (tileToCheck != startingTile)
+                searchDepth = floodFilledTiles[tileToCheck].Value - 1;
+            if (searchDepth > 0)
+                tilesToCheck.AddRange(getAdjacentTilesFiltered(searchDepth, tileToCheck, filter));
+        }
+    }
+
+    public List<Tile> getAdjacentTilesFiltered(int searchDepth, Tile tile, Predicate<Tile> filter) {
         List<Tile> surroundingTiles = new List<Tile>();
-        centerTile.getSurroundingTiles().FindAll(tile => !movableTiles.ContainsKey(tile)).ForEach(tile => {
-            print(maxScanRange + " " + movesLeft + " " + moves);
-            if (levelManager.isMovable(tile) && maxScanRange - movesLeft <= moves) {
-                    surroundingTiles.Add(tile);
-                    if (attackableTiles.ContainsKey(tile))
-                        attackableTiles.Remove(tile);
-                    movableTiles.Add(tile, new KeyValuePair<Tile, int>(centerTile, movesLeft));
-                }
-                else if (!attackableTiles.ContainsKey(tile) && levelManager.isAttackable(tile) && moves - movesLeft < attackRange && attacks > 0)
-                    attackableTiles.Add(tile, new KeyValuePair<Tile, int>(centerTile, movesLeft));
+        tile.getSurroundingTiles().FindAll(t => (!floodFilledTiles.ContainsKey(t) && filter(t))).ForEach(adjacentTile => {
+                surroundingTiles.Add(adjacentTile);
+                floodFilledTiles.Add(adjacentTile, new KeyValuePair<Tile, int>(tile, searchDepth));
             });
         return surroundingTiles;
     }
