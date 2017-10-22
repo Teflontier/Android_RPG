@@ -35,6 +35,8 @@ public abstract class Entity : Clickable {
     protected LevelManager levelManager;
     protected CommandMenu commandMenu;
 
+    private int maxScanRange;
+
     public override void Awake() {
         base.Awake();
         ddol = GameObject.FindObjectOfType<DDOL>();
@@ -60,7 +62,8 @@ public abstract class Entity : Clickable {
         List<Tile> tilesToCheck = new List<Tile>();
         tilesToCheck.Add(startingTile);
 
-        int scanRange = Mathf.Max(moves, attackRange);
+        maxScanRange = Mathf.Max(moves, attackRange);
+        int scanRange = maxScanRange;
         while (tilesToCheck.Count > 0) {
             Tile tileToCheck = tilesToCheck[0];
             tilesToCheck.RemoveAt(0);
@@ -83,7 +86,8 @@ public abstract class Entity : Clickable {
     private List<Tile> getSurroundingTilesNotMarked(int movesLeft, Tile centerTile) {
         List<Tile> surroundingTiles = new List<Tile>();
         centerTile.getSurroundingTiles().FindAll(tile => !movableTiles.ContainsKey(tile)).ForEach(tile => {
-                if (levelManager.isMovable(tile) && moves > 0) {
+            print(maxScanRange + " " + movesLeft + " " + moves);
+            if (levelManager.isMovable(tile) && maxScanRange - movesLeft <= moves) {
                     surroundingTiles.Add(tile);
                     if (attackableTiles.ContainsKey(tile))
                         attackableTiles.Remove(tile);

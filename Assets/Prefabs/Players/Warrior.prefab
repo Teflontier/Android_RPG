@@ -53,8 +53,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 3
-  maxMoves: 5
+  maxMoves: 3
   attackRange: 2
+  maxAttacks: 2
   state: 0
   clickedObject: {fileID: 0}
   hp: 3
