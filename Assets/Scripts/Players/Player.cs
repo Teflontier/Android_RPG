@@ -85,10 +85,16 @@ public class Player : Entity {
             state = EntityState.END_TURN;
             return;
         }
-        if (lastMenuClicked.name.Equals(MOVE) || lastMenuClicked.name.Equals(ATTACK)) {
+        if (lastMenuClicked.name.Equals(MOVE)) {
             levelManager.destroyOverlays();
             commandMenu.setVisibility(false);
             state = EntityState.CALCULATE_ACTION_FIELDS;
+            return;
+        }
+        if(lastMenuClicked.name.Equals(ATTACK)){
+            levelManager.destroyOverlays();
+            commandMenu.setVisibility(false);
+            state = EntityState.ATTACK;
             return;
         }
     }
@@ -98,12 +104,6 @@ public class Player : Entity {
         tilesToMove.Clear();
         if (lastMenuClicked.name.Equals(MOVE))
             tilesToMove.Add(tile);
-        if (lastMenuClicked.name.Equals(ATTACK)) {
-            while (attackableTiles.ContainsKey(tile)) {
-                tile = attackableTiles[tile].Key;
-                print(movableTiles.ContainsKey(tile));
-            }
-        }
         while (movableTiles.ContainsKey(tile)) {
             tile = movableTiles[tile].Key;
             tilesToMove.Insert(0, tile);
@@ -142,7 +142,7 @@ public class Player : Entity {
 
     private void handleAttack() {
         Mob mob = levelManager.getGameObjectOnTile(tileToUseActionOn.GetComponent<Tile>()).GetComponent<Mob>();
-        moves--;
+        attacks--;
         mob.increaseHp(-1);
         state = EntityState.SHOW_POSSIBLE_MOVES;
     }

@@ -20,12 +20,14 @@ public abstract class Entity : Clickable {
     public int maxHp = 3;
     public int maxMoves = 3;
     public int attackRange = 1;
+    public int maxAttacks = 2;
 
     public EntityState state = EntityState.INITIALIZE;
     public GameObject clickedObject;
 
-    [SerializeField] protected int hp = 3;
-    protected int moves = 3;
+    [SerializeField] protected int hp = 0;
+    protected int moves = 0;
+    protected int attacks = 0;
     protected Dictionary<Tile, KeyValuePair<Tile, int>> movableTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
     protected Dictionary<Tile, KeyValuePair<Tile, int>> attackableTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
 
@@ -45,6 +47,7 @@ public abstract class Entity : Clickable {
 
     public void initialize() {
         moves = maxMoves;
+        attacks = maxAttacks;
     }
 
     public void calcPossibleActions() {
@@ -54,65 +57,40 @@ public abstract class Entity : Clickable {
         Vector2 startingPos = LevelManager.getIndicesFor(transform.position);
         Tile startingTile = levelManager.tileMatrix[(int)startingPos.x, (int)startingPos.y];
 
-        calcMovementFields(startingTile);
-        calcAttackFields(startingTile);
-
-        foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in movableTiles)
-            if (!pair.Key.transform.position.Equals(startingTile.transform.position))
-                levelManager.createOverlay(ddol.greenOverlay, pair.Key.transform.position);
-        foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in attackableTiles)
-            if (!pair.Key.transform.position.Equals(startingTile.transform.position))
-                levelManager.createOverlay(ddol.redOverlay, pair.Key.transform.position);
-    }
-
-    private void calcMovementFields(Tile startingTile) {
         List<Tile> tilesToCheck = new List<Tile>();
         tilesToCheck.Add(startingTile);
 
-        int movesLeft = moves;
+        int scanRange = Mathf.Max(moves, attackRange);
         while (tilesToCheck.Count > 0) {
             Tile tileToCheck = tilesToCheck[0];
             tilesToCheck.RemoveAt(0);
             if (tileToCheck != startingTile)
-                movesLeft = movableTiles[tileToCheck].Value - 1;
-            if (movesLeft > 0)
-                tilesToCheck.AddRange(getSurroundingMovementTilesNotMarked(movesLeft, tileToCheck));
+                scanRange = movableTiles[tileToCheck].Value - 1;
+            if (scanRange > 0)
+                tilesToCheck.AddRange(getSurroundingTilesNotMarked(scanRange, tileToCheck));
         }
-    }
 
-    private List<Tile> getSurroundingMovementTilesNotMarked(int movesLeft, Tile centerTile) {
-        List<Tile> surroundingTiles = new List<Tile>();
-        centerTile.getSurroundingTiles().FindAll(tile => levelManager.isMovable(tile) && !movableTiles.ContainsKey(tile)).ForEach(tile => {
-                surroundingTiles.Add(tile);
-                movableTiles.Add(tile, new KeyValuePair<Tile, int>(centerTile, movesLeft));
-            });
-        return surroundingTiles;
-    }
-
-    private void calcAttackFields(Tile startingTile) {
-        List<Tile> tilesToCheck = new List<Tile>();
-        tilesToCheck.Add(startingTile);
-        foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in movableTiles)
-            tilesToCheck.Add(pair.Key);
-
-        int attackRangeLeft = attackRange;
-        while (tilesToCheck.Count > 0) {
-            Tile tileToCheck = tilesToCheck[0];
-            tilesToCheck.RemoveAt(0);
-            if (movableTiles.ContainsKey(tileToCheck))
-                attackRangeLeft = attackRange;
-            if (attackableTiles.ContainsKey(tileToCheck))
-                attackRangeLeft = attackableTiles[tileToCheck].Value - 1;
-            if (attackRangeLeft > 0)
-                tilesToCheck.AddRange(getSurroundingAttackTilesNotMarked(attackRangeLeft, tileToCheck));
+        foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in movableTiles) {
+            Tile key = pair.Key;
+            if (!key.transform.position.Equals(startingTile.transform.position))
+                levelManager.createOverlay(ddol.greenOverlay, key.transform.position);
         }
+        foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in attackableTiles)
+            if (!pair.Key.transform.position.Equals(startingTile.transform.position) && !movableTiles.ContainsKey(pair.Key))
+                levelManager.createOverlay(ddol.redOverlay, pair.Key.transform.position);
     }
 
-    private List<Tile> getSurroundingAttackTilesNotMarked(int rangeLeft, Tile centerTile) {
+    private List<Tile> getSurroundingTilesNotMarked(int movesLeft, Tile centerTile) {
         List<Tile> surroundingTiles = new List<Tile>();
-        centerTile.getSurroundingTiles().FindAll(tile => !movableTiles.ContainsKey(tile) && !attackableTiles.ContainsKey(tile)).ForEach(tile => {
-                surroundingTiles.Add(tile);
-                attackableTiles.Add(tile, new KeyValuePair<Tile, int>(centerTile, rangeLeft));
+        centerTile.getSurroundingTiles().FindAll(tile => !movableTiles.ContainsKey(tile)).ForEach(tile => {
+                if (levelManager.isMovable(tile) && moves > 0) {
+                    surroundingTiles.Add(tile);
+                    if (attackableTiles.ContainsKey(tile))
+                        attackableTiles.Remove(tile);
+                    movableTiles.Add(tile, new KeyValuePair<Tile, int>(centerTile, movesLeft));
+                }
+                else if (!attackableTiles.ContainsKey(tile) && levelManager.isAttackable(tile) && moves - movesLeft < attackRange && attacks > 0)
+                    attackableTiles.Add(tile, new KeyValuePair<Tile, int>(centerTile, movesLeft));
             });
         return surroundingTiles;
     }
