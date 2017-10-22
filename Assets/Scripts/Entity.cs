@@ -10,7 +10,7 @@ public abstract class Entity : Clickable {
         WAIT_FOR_ACTION,
         CREATE_COMMAND_MENU,
         WAIT_FOR_MENU_SELECTION,
-        CALCULATE_MOVEMENT_FIELDS,
+        CALCULATE_ACTION_FIELDS,
         MOVE,
         MOVE_ENDED,
         ATTACK,
@@ -47,38 +47,72 @@ public abstract class Entity : Clickable {
         moves = maxMoves;
     }
 
-    public void calcPossibleMoves() {
+    public void calcPossibleActions() {
         movableTiles.Clear();
         attackableTiles.Clear();
-        if (moves == 0)
-            return;
+
         Vector2 startingPos = LevelManager.getIndicesFor(transform.position);
         Tile startingTile = levelManager.tileMatrix[(int)startingPos.x, (int)startingPos.y];
-        List<Tile> tilesToCheck = new List<Tile>();
-        tilesToCheck.AddRange(getSurroundingTilesNotMarked(moves, startingTile));
 
-        while (tilesToCheck.Count > 0) {
-            Tile tileToCheck = tilesToCheck[0];
-            Vector2 tilePos = tileToCheck.transform.position;
-            tilesToCheck.RemoveAt(0);
-            int movesLeft = movableTiles[tileToCheck].Value - 1;
-            if (movesLeft > 0)
-                tilesToCheck.AddRange(getSurroundingTilesNotMarked(movesLeft, tileToCheck));
-        }
+        calcMovementFields(startingTile);
+        calcAttackFields(startingTile);
+
         foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in movableTiles)
-            levelManager.createOverlay(ddol.greenOverlay, pair.Key.transform.position);
+            if (!pair.Key.transform.position.Equals(startingTile.transform.position))
+                levelManager.createOverlay(ddol.greenOverlay, pair.Key.transform.position);
         foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in attackableTiles)
-            levelManager.createOverlay(ddol.redOverlay, pair.Key.transform.position);
+            if (!pair.Key.transform.position.Equals(startingTile.transform.position))
+                levelManager.createOverlay(ddol.redOverlay, pair.Key.transform.position);
     }
 
-    private List<Tile> getSurroundingTilesNotMarked(int movesLeft, Tile centerTile) {
+    private void calcMovementFields(Tile startingTile) {
+        List<Tile> tilesToCheck = new List<Tile>();
+        tilesToCheck.Add(startingTile);
+
+        int movesLeft = moves;
+        while (tilesToCheck.Count > 0) {
+            Tile tileToCheck = tilesToCheck[0];
+            tilesToCheck.RemoveAt(0);
+            if (tileToCheck != startingTile)
+                movesLeft = movableTiles[tileToCheck].Value - 1;
+            if (movesLeft > 0)
+                tilesToCheck.AddRange(getSurroundingMovementTilesNotMarked(movesLeft, tileToCheck));
+        }
+    }
+
+    private List<Tile> getSurroundingMovementTilesNotMarked(int movesLeft, Tile centerTile) {
         List<Tile> surroundingTiles = new List<Tile>();
-        centerTile.getSurroundingTiles().FindAll(tile => levelManager.isMovable(tile) && !movableTiles.ContainsKey(tile) && !attackableTiles.ContainsKey(tile)).ForEach(tile => {
+        centerTile.getSurroundingTiles().FindAll(tile => levelManager.isMovable(tile) && !movableTiles.ContainsKey(tile)).ForEach(tile => {
                 surroundingTiles.Add(tile);
                 movableTiles.Add(tile, new KeyValuePair<Tile, int>(centerTile, movesLeft));
             });
-        centerTile.getSurroundingTiles().FindAll(tile => levelManager.isAttackable(tile) && !movableTiles.ContainsKey(tile) && !attackableTiles.ContainsKey(tile)).ForEach(tile => {
-                attackableTiles.Add(tile, new KeyValuePair<Tile, int>(centerTile, movesLeft));
+        return surroundingTiles;
+    }
+
+    private void calcAttackFields(Tile startingTile) {
+        List<Tile> tilesToCheck = new List<Tile>();
+        tilesToCheck.Add(startingTile);
+        foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in movableTiles)
+            tilesToCheck.Add(pair.Key);
+
+        int attackRangeLeft = attackRange;
+        while (tilesToCheck.Count > 0) {
+            Tile tileToCheck = tilesToCheck[0];
+            tilesToCheck.RemoveAt(0);
+            if (movableTiles.ContainsKey(tileToCheck))
+                attackRangeLeft = attackRange;
+            if (attackableTiles.ContainsKey(tileToCheck))
+                attackRangeLeft = attackableTiles[tileToCheck].Value - 1;
+            if (attackRangeLeft > 0)
+                tilesToCheck.AddRange(getSurroundingAttackTilesNotMarked(attackRangeLeft, tileToCheck));
+        }
+    }
+
+    private List<Tile> getSurroundingAttackTilesNotMarked(int rangeLeft, Tile centerTile) {
+        List<Tile> surroundingTiles = new List<Tile>();
+        centerTile.getSurroundingTiles().FindAll(tile => !movableTiles.ContainsKey(tile) && !attackableTiles.ContainsKey(tile)).ForEach(tile => {
+                surroundingTiles.Add(tile);
+                attackableTiles.Add(tile, new KeyValuePair<Tile, int>(centerTile, rangeLeft));
             });
         return surroundingTiles;
     }

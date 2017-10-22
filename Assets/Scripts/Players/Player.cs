@@ -18,7 +18,7 @@ public class Player : Entity {
                 state = EntityState.SHOW_POSSIBLE_MOVES;
                 break;
             case EntityState.SHOW_POSSIBLE_MOVES:
-                calcPossibleMoves();
+                calcPossibleActions();
                 state = EntityState.WAIT_FOR_ACTION;
                 break;
             case EntityState.WAIT_FOR_ACTION:
@@ -30,8 +30,8 @@ public class Player : Entity {
             case EntityState.WAIT_FOR_MENU_SELECTION:
                 handleWaitForMenuSelection();
                 break;
-            case EntityState.CALCULATE_MOVEMENT_FIELDS:
-                handleCalculateMovementFields();
+            case EntityState.CALCULATE_ACTION_FIELDS:
+                handleCalculateActionFields();
                 break;
             case EntityState.MOVE:
                 handleMove();
@@ -64,7 +64,7 @@ public class Player : Entity {
         Tile tile = tileToUseActionOn.GetComponent<Tile>();
         if (tile != null && movableTiles.ContainsKey(tile))
             commandMenu.setMoveVisibility(true);
-        if (tile != null && attackableTiles.ContainsKey(tile))
+        if (tile != null && attackableTiles.ContainsKey(tile) && levelManager.isAttackable(tile))
             commandMenu.setAttackVisibility(true);
         commandMenu.setEndVisibility(true);
         state = EntityState.WAIT_FOR_MENU_SELECTION;
@@ -73,7 +73,7 @@ public class Player : Entity {
     private void handleWaitForMenuSelection() {
         if (clickedObject == null)
             return;
-        if (clickedObject.GetComponent<Tile>() != null) {
+        if (clickedObject.GetComponent<Tile>() != null || clickedObject.GetComponent<Blocker>() != null) {
             handleWaitForAction();
             return;
         }
@@ -88,19 +88,21 @@ public class Player : Entity {
         if (lastMenuClicked.name.Equals(MOVE) || lastMenuClicked.name.Equals(ATTACK)) {
             levelManager.destroyOverlays();
             commandMenu.setVisibility(false);
-            state = EntityState.CALCULATE_MOVEMENT_FIELDS;
+            state = EntityState.CALCULATE_ACTION_FIELDS;
             return;
         }
     }
 
-    private void handleCalculateMovementFields() {
+    private void handleCalculateActionFields() {
         Tile tile = tileToUseActionOn.GetComponent<Tile>();
         tilesToMove.Clear();
         if (lastMenuClicked.name.Equals(MOVE))
             tilesToMove.Add(tile);
         if (lastMenuClicked.name.Equals(ATTACK)) {
-            tile = attackableTiles[tile].Key;
-            tilesToMove.Add(tile);
+            while (attackableTiles.ContainsKey(tile)) {
+                tile = attackableTiles[tile].Key;
+                print(movableTiles.ContainsKey(tile));
+            }
         }
         while (movableTiles.ContainsKey(tile)) {
             tile = movableTiles[tile].Key;
@@ -138,7 +140,7 @@ public class Player : Entity {
         lastMenuClicked = null;
     }
 
-    private void handleAttack(){
+    private void handleAttack() {
         Mob mob = levelManager.getGameObjectOnTile(tileToUseActionOn.GetComponent<Tile>()).GetComponent<Mob>();
         moves--;
         mob.increaseHp(-1);
