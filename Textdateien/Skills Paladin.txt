@@ -1,0 +1,37 @@
+•----------• SKILLS •----------•
+
+--------------------Paladin--------------------
+
+•Heilung:
+	Kosten 1 Mana, heilt X + Würfel
+
+•Heiliges Schild
+	Kosten 1 Ausdauer
+	Bei nutzen der Aktion Verteidigung erhält er 2 x Würfel Verteidigung
+
+•Gebunden an das Licht
+	Kostet 2 Mana
+	Wähle einen Verbündeten in 3 Felder Radius:
+	  Bis zu Beginn deines nächsten Zuges erhält der Verbündete
+	  +X Schaden oder +X Verteidigung 
+
+•Göttliche Präsens (Passiv)	
+	Aura Effekt: Wenn ein Verbündeter in 5 Feldern zu dir ein
+	Powersymbol bei einen Angriff würfelt erhält dieser 1HP
+
+•Konzentrierter Geist (Passiv)
+	Erhalte zu beginn deines Zuges 2 Mana
+
+•Blocken 
+	Wenn eurer Charakter ein Schild Trägt wird der erste erhaltene
+	Schaden jede Runde geblockt
+
+•Versprechen des Schutzes (mit schelle absprechen)
+	Kosten 5 Mana und 1AP
+	Wähle einen Verbündeten in Bewegungsradius bewege dich zu ihm, ignoriere
+	dabei Hindernisse und Bewegungseinschränkungen.
+	Der Gewählte Verbündete kann in dieser Runde nicht Angegriffen werden 
+	Verursacht der Paladin in diesem Zug noch Schaden wird der gewählte Verbündete um
+	diesen Betrag geheilt
+
+	

@@ -1,0 +1,61 @@
+			•••••KLASSEN•••••
+
+Bemerkung zur Skalierung 
+		(orc greift Krieger an 3 schläge zum töten)
+		(ratte greift krieger an 5 schläge zum Töten )
+skala 0-10
+
+----------Krieger/Berserker[DD]----------
+Beschreibung:
+zum draufhauen oder einstecken 
+
+Bewegung 	:	5
+Trefferpunkte	:	15 HP 
+Mana		:	0 MP (wird noch erdacht)
+Ausdauer	:	8 SP
+----------Magier[DD]----------
+Beschreibung:
+
+Bewegung	:	
+Trefferpunkte	:
+Mana		:
+Ausdauer	:
+----------Schurke/Dieb[DD]----------
+Beschreibung:
+
+Bewegung	:		
+Trefferpunkte	:
+Mana		:
+Ausdauer	:
+----------Priester----------
+Beschreibung:
+
+Bewegung	:		
+Trefferpunkte	:
+Mana		:
+Ausdauer	:
+----------Fernkämpfer----------
+Beschreibung:
+
+Bewegung	:		
+Trefferpunkte	:
+Mana		:
+Ausdauer	:
+----------Paladin----------
+Beschreibung:
+Eine klasse für support und tank.
+Der Paladin ist Stärker in einer Gruppe.
+
+Bewegung	:	
+Trefferpunkte	:
+Mana		:
+Ausdauer	:
+----------Summoner----------
+Beschreibung:
+beschwört verschiedene elemente die mit ihm kämpfen
+
+Bewegung	:	
+Trefferpunkte	:
+Mana		:
+Ausdauer	:
+----------

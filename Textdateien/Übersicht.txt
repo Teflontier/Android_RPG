@@ -1,0 +1,26 @@
+
+			•••••ÜBERSICHT•••••
+
+
+-------------------- Resourcen -----------------------
+Aktionspunkt    (AP) = jede Runde 2 (2= bisher festgelegt sollte änderbar sein)
+Trefferpunkte   (HP) = Die Lebenspunkte jeder Figur
+Mana	      (Mana) = Die Punkte an Mana die eine Figur zur verfügung für Magie und Fähigkeiten
+Bewegung	(MP) = Die Anzahl der Bewegunspunkte des Charakters
+Ausdauer        (SP) = Punkte für extra Aktionen:
+			• 1SP = 1MP
+		     
+
+---------------------Hauptaktionen je einen AP--------------------- 
+ •Bewegen:
+	-erhalte X MP (X = MP des jeweiligen Charakters)
+	-der charakter kann seine MP ausgeben um sich über Felder zu bewegen
+ •Ausruhen
+	-erhalte deine komplete/einen Teil Ausdauer zurück	
+ •Angriff
+	-greife einen Gegener in deiner nähe an
+ •Aktivieren
+	-Untersuche deine Umgebung
+	-öffne eine Kiste,Tür, usw.
+ •Verteidigung
+	-erhalte zusätliche Würfel in der Verteidigung (welche Würfel sind noch unklar)
