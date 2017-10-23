@@ -66,7 +66,7 @@ public abstract class Entity : Clickable {
         if (attacks > 0) {
             floodFill(startingTile, attackRange, tile => true);
             foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in floodFilledTiles)
-                if (levelManager.isAttackable(pair.Key))
+                if (levelManager.isAttackable(pair.Key)  && !movableTiles.ContainsKey(pair.Key))
                     attackableTiles.Add(pair.Key, pair.Value);
         }
 
@@ -76,7 +76,7 @@ public abstract class Entity : Clickable {
                 levelManager.createOverlay(ddol.greenOverlay, key.transform.position);
         }
         foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in attackableTiles)
-            if (!pair.Key.transform.position.Equals(startingTile.transform.position) && !movableTiles.ContainsKey(pair.Key))
+            if (!pair.Key.transform.position.Equals(startingTile.transform.position))
                 levelManager.createOverlay(ddol.redOverlay, pair.Key.transform.position);
     }
 
