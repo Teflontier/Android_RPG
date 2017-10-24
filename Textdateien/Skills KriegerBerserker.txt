@@ -1,0 +1,24 @@
+•----------• SKILLS •----------•
+
+--------------------Krieger/Berserker--------------------
+
+•Ewige Wut (Passiv):
+	Erhält bei erfolgreicher Tötung 20% Chance auf zusätzlichen Angriff
+	
+•Des Berserkers Lehre (Passiv):
+	Bei einer TP-Anzahl von <X : Schaden + X
+
+•Angestauter Hass:
+	Kostet X Mana 
+	Kostet 1 Ausdauer
+		Verursachter Schaden: Würfel * 1,5 (Aufgerundet)
+		
+•Meditation:
+	Nur mit vollem Manapool einsetzbar
+	Kostet X Ausdauer
+		Regeneriert X TP
+		
+•Kampfschrei:
+	Kostet X Mana	
+		Verbündete im Umkreis von 2 Feldern bekommen Schaden +X
+		

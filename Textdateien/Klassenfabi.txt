@@ -1,0 +1,73 @@
+			•••••KLASSEN•••••
+
+Bemerkung zur Skalierung 
+		(orc greift Krieger an 3 schläge zum töten)
+		(ratte greift krieger an 5 schläge zum Töten )
+		
+skala 0-10
+
+
+----------Krieger/Berserker[DD]----------
+Beschreibung:
+Allrounder ohne magisches Talent.
+Großer physischer Schaden.
+
+Bewegung 	:	5
+Trefferpunkte	:	9
+Mana		:	1 
+Ausdauer	:	4 
+----------Magier[DD]----------
+Beschreibung:
+Magischer Fern- und Nahkämpfer. 
+Größter Schaden, hohe Sterbewahrscheinlichkeit.
+
+Bewegung	:	4
+Trefferpunkte	:	5
+Mana		:	7
+Ausdauer	:	3
+----------Schurke/Dieb[DD]----------
+Beschreibung:	
+Schnell und gut taktisch Einsetzbar.
+Weite Sicht?
+Benötigt Schutz.
+
+Bewegung	:	6
+Trefferpunkte	:	7
+Mana		:	4	
+Ausdauer	:	4
+----------Priester----------
+Beschreibung:
+Heilende Gabe durch den Glauben an das Licht.
+Keine Kampffähigkeiten.
+
+Bewegung	:	4
+Trefferpunkte	:	4 
+Mana		:	10
+Ausdauer	:	3
+----------Fernkämpfer----------
+Beschreibung:
+Töten durch Präzision.
+Stark auf Entfernung, schwach im Nahkampf.
+
+Bewegung	:	5
+Trefferpunkte	:	6
+Mana		:	6	
+Ausdauer	:	4
+----------Paladin----------
+Beschreibung:
+Eine klasse für support und tank.
+Der Paladin ist Stärker in einer Gruppe.
+
+Bewegung	:	4	
+Trefferpunkte	:	8
+Mana		:	4
+Ausdauer	:	4
+----------Summoner----------
+Beschreibung:
+beschwört verschiedene elemente die mit ihm kämpfen
+
+Bewegung	:	4
+Trefferpunkte	:	5
+Mana		:	8
+Ausdauer	:	2
+----------
