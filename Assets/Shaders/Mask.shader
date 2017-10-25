@@ -3,7 +3,6 @@
 Shader "Custom/Mask" {
 	Properties {
         _MainTex ("Sprite Texture", 2D) = "white" {}
-        _Color ("Alpha Color Key", Color) = (0,0,0,1)
 	}
 	SubShader {
 	Tags { "RenderType"="Opaque" "Queue"="Geometry-100" }

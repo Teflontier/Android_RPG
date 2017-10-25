@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour {
 
-    public int width = 2;
-    public int height = 2;
+    public int width = 10;
+    public int height = 10;
 
     public int minBlockers = 0;
     public int maxBlockers = 0;
@@ -117,6 +117,18 @@ public class LevelManager : MonoBehaviour {
         for (int i = 0; i < Random.Range(minBlockers, maxBlockers); i++) {
             Vector2 coordinates = getRandomFreeTileCoordinates();
             blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], coordinates, Quaternion.identity, blockerObjectHolder) as Blocker);
+        }
+        for (int i = 0; i < width; i++) {
+            Vector2 pos = getCoordinatesFor(i, 0);
+            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
+            pos = getCoordinatesFor(i, height - 1);
+            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
+        }
+        for (int k = 0; k < height; k++) {
+            Vector2 pos = getCoordinatesFor(0, k);
+            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
+            pos = getCoordinatesFor(width - 1, k);
+            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
         }
     }
 
