@@ -72,6 +72,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     - _useSpriteRendererColor: 1
+    - alpha: 0.6
     - useSpriteRendererColor: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

@@ -85,7 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4992244876598978}
   - component: {fileID: 60914203699649776}
-  m_Layer: 4
+  m_Layer: 9
   m_Name: PolyCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}

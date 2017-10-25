@@ -43,7 +43,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: ff6e3f55817989a47aa82b2410bdbb25, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -83,6 +83,7 @@ Material:
     - _ZWrite: 1
     - _useSpriteRendererColor: 0
     - _userSpriteRendererColor: 0
+    - alpha: 1
     - useSpriteRendererColor: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

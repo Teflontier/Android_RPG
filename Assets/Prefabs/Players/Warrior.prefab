@@ -129,10 +129,9 @@ MonoBehaviour:
     m_Bits: 256
   layerMask2:
     serializedVersion: 2
-    m_Bits: 16
+    m_Bits: 512
   defaultMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   customMaterial: {fileID: 2100000, guid: ec97f2f448dea574996ae4bcf41f4dd6, type: 2}
-  boxSize: {x: 0, y: 0}
 --- !u!114 &114518558083096532
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -145,7 +144,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 3
-  maxMoves: 3
+  maxMoves: 4
   attackRange: 2
   maxAttacks: 2
   state: 0

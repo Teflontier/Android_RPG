@@ -1,11 +1,13 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
-Shader "Custom/SurfaceShader" {
+﻿Shader "Custom/SurfaceShader" {
 	Properties {
-        _MainTex ("Sprite Texture", 2D) = "white" {}
+		_MainTex ("Texture", 2D) = "white"
         [Toggle] useSpriteRendererColor("use SpriteRenderer Color", Float) = 0
+        alpha ("Alpha", Float) = 1
 	}
 	SubShader {
+	 	Tags { "Queue"="Transparent" "RenderType"="Transparent" }
+	 	Blend SrcAlpha OneMinusSrcAlpha
+
 		Stencil{
 			Ref 1
 			Comp equal
@@ -16,10 +18,10 @@ Shader "Custom/SurfaceShader" {
              CGPROGRAM
              #pragma vertex vert
              #pragma fragment frag
-             #pragma multi_compile DUMMY PIXELSNAP_ON
-  
+
              sampler2D _MainTex;
              float useSpriteRendererColor;
+             float alpha;
  
              struct Vertex {
                  float4 vertex : POSITION;
@@ -37,23 +39,26 @@ Shader "Custom/SurfaceShader" {
 
              Fragment vert(Vertex v)
              {
-                 Fragment o;
-                 o.vertex = UnityObjectToClipPos(v.vertex);
-                 o.uv_MainTex = v.uv_MainTex;
-                 o.uv2 = v.uv2;
-                 o.color = v.color;
-                 return o;
+                 Fragment fragment;
+                 fragment.vertex = UnityObjectToClipPos(v.vertex);
+                 fragment.uv_MainTex = v.uv_MainTex;
+                 fragment.uv2 = v.uv2;
+                 fragment.color = v.color;
+                 return fragment;
              }
 
              float4 frag(Fragment fragment) : COLOR
              {
-                 float4 o = float4(1, 0, 0, 0.2);
+                 float4 colorOut = fragment.color;
                  if(useSpriteRendererColor == 0){
                  	half4 c = tex2D (_MainTex, fragment.uv_MainTex);
-				 	o.rgb = c.rgb;
-                 }else
-                 	o.rgb = fragment.color;
-                 return o;
+				 	colorOut.rgb = c.rgb;
+				 	colorOut.a = c.a;
+                 }else{
+                 	colorOut.rgb = fragment.color;
+                 	colorOut.a = alpha;
+                 }
+                 return colorOut;
              }
  
              ENDCG
