@@ -7,6 +7,7 @@ public class Sight : MonoBehaviour {
     public float sightRadius = 10f;
     public LayerMask layerMask;
     private MeshFilter meshFilter;
+    public bool bla;
 
     public struct VertexPosWithAngle {
         public Vector2 vertexPos;
@@ -26,10 +27,13 @@ public class Sight : MonoBehaviour {
         List<VertexPosWithAngle> viewPoints = new List<VertexPosWithAngle>();
         Collider2D[] blockersInRange = Physics2D.OverlapCircleAll(transform.position, sightRadius, layerMask);
         foreach (Collider2D col in blockersInRange) {
+            if (!(col is PolygonCollider2D))
+                continue;
             PolygonCollider2D polyCol = (PolygonCollider2D)col;
             Vector2 polyPos = polyCol.transform.position;
             foreach (Vector2 point in polyCol.points) {
                 Vector2 vertexPos = polyPos + point;
+                Debug.DrawLine(new Vector2(vertexPos.x, vertexPos.y - 0.05f), new Vector2(vertexPos.x, vertexPos.y + 0.05f));
                 viewPoints.Add(new VertexPosWithAngle(vertexPos, Vector2.Angle(transform.position, vertexPos)));
             }
         }
@@ -37,10 +41,10 @@ public class Sight : MonoBehaviour {
         viewPoints.Sort((v1, v2) => v1.angle.CompareTo(v2.angle));
         List<Vector2> hitPoints = new List<Vector2>();
         foreach (VertexPosWithAngle vertexPos in viewPoints) {
-            RaycastHit2D hit = Physics2D.Linecast(transform.position, vertexPos.vertexPos, layerMask);
+            RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.01f, vertexPos.vertexPos - (Vector2)transform.position, sightRadius, layerMask);
             if (hit.collider != null)
                 hitPoints.Add(hit.point);
-            else{
+            else {
                 Vector2 direction = (vertexPos.vertexPos - (Vector2)transform.position).normalized;
                 hitPoints.Add((Vector2)transform.position + direction * sightRadius);
             }
