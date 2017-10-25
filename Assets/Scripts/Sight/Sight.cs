@@ -10,9 +10,10 @@ public class Sight : MonoBehaviour {
     public Material defaultMaterial;
     public Material customMaterial;
     private MeshFilter meshFilter;
+    private Mesh mesh;
     private LevelManager levelManager;
-
-    public Vector2 boxSize;
+    private List<Vector2> viewPoints = new List<Vector2>();
+    private List<VertexPosWithAngle> hitPoints = new List<VertexPosWithAngle>();
 
     public struct VertexPosWithAngle {
         public Vector2 vertexPos;
@@ -26,17 +27,16 @@ public class Sight : MonoBehaviour {
 
     public void Awake() {
         levelManager = GameObject.FindObjectOfType<LevelManager>();
+        meshFilter = GetComponent<MeshFilter>();
+        mesh = new Mesh();
+        meshFilter.mesh = mesh;
     }
 
     void Update() {
-//        print(Time.deltaTime);
-//        levelManager.blockers.ForEach(blocker => blocker.setMaterial(customMaterial));
+        levelManager.blockers.ForEach(blocker => blocker.setMaterial(customMaterial));
+        viewPoints.Clear();
+        hitPoints.Clear();
 
-        meshFilter = GetComponent<MeshFilter>();
-        Mesh mesh = new Mesh();
-        meshFilter.mesh = mesh;
-
-        List<VertexPosWithAngle> viewPoints = new List<VertexPosWithAngle>();
         Collider2D[] blockersInRange = Physics2D.OverlapCircleAll(transform.position, sightRadius, layerMask2);
         foreach (Collider2D col in blockersInRange) {
             if (!(col is PolygonCollider2D))
@@ -45,56 +45,31 @@ public class Sight : MonoBehaviour {
             Vector2 polyPos = polyCol.transform.position;
             foreach (Vector2 point in polyCol.points) {
                 Vector2 viewPointVertexPos = polyPos + point;
-//                Debug.DrawLine(new Vector2(vertexPos.x, vertexPos.y - 0.05f), new Vector2(vertexPos.x, vertexPos.y + 0.05f));
-                viewPoints.Add(new VertexPosWithAngle(viewPointVertexPos, Vector2.SignedAngle(Vector2.one, viewPointVertexPos - (Vector2)transform.position)));
+                viewPoints.Add(viewPointVertexPos);
             }
         }
 
-        viewPoints.Sort((v1, v2) => v1.angle.CompareTo(v2.angle));
-        List<Vector2> hitPoints = new List<Vector2>();
-        foreach (VertexPosWithAngle vertexPos in viewPoints) {
-//        VertexPosWithAngle vertexPos = viewPoints[0];
-            Debug.DrawLine(new Vector2(vertexPos.vertexPos.x, vertexPos.vertexPos.y - 0.05f), new Vector2(vertexPos.vertexPos.x, vertexPos.vertexPos.y + 0.05f));
-            Vector2 direction = vertexPos.vertexPos - (Vector2)transform.position;
-//            RaycastHit2D hit = Physics2D.CircleCast(transform.position, 0.001f, direction, sightRadius, layerMask);
-//            RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxSize, 0, direction, layerMask);
-            Vector2 endPos = (Vector2)transform.position + direction * sightRadius;
-            RaycastHit2D hit = Physics2D.Linecast(transform.position, endPos, layerMask);
+        foreach (Vector2 vertexPos in viewPoints) {
+            Vector2 direction = vertexPos - (Vector2)transform.position;
+            RaycastHit2D hit = getLineCastHit((vertexPos - (Vector2)transform.position).normalized);
             if (hit.collider != null) {
-                hitPoints.Add(hit.point);
-//            hit.collider.gameObject.GetComponent<SpriteRenderer>().material = defaultMaterial;
-
-                Vector2 newDirection = (Quaternion.AngleAxis(0.1f, Vector3.forward) * direction).normalized;
-//                RaycastHit2D newHit = Physics2D.CircleCast(transform.position, 0.001f, newDirection, sightRadius, layerMask);
-                RaycastHit2D newHit = Physics2D.Linecast(transform.position, (Vector2)transform.position + newDirection * sightRadius, layerMask);
-                if (newHit.collider != null) {
-                    hitPoints.Add(newHit.point);
-                }
-                else {
-                    hitPoints.Add((Vector2)transform.position + newDirection * sightRadius);
-                }
-                newDirection = (Quaternion.AngleAxis(-0.1f, Vector3.forward) * direction).normalized;
-//                newHit =  Physics2D.CircleCast(transform.position, 0.001f, newDirection, sightRadius, layerMask);
-                newHit = Physics2D.Linecast(transform.position, (Vector2)transform.position + newDirection * sightRadius, layerMask);
-                if (newHit.collider != null) {
-                    hitPoints.Add(newHit.point);
-                }
-                else {
-                    hitPoints.Add((Vector2)transform.position + newDirection * sightRadius);
-                }
-
-            }
-            else {
-                hitPoints.Add((Vector2)transform.position + direction * sightRadius);
+                Vector2 normal = new Vector2(direction.y, -direction.x);
+                getLineCastHit(((hit.point + normal * 0.1f) - (Vector2)transform.position).normalized);
+                getLineCastHit(((hit.point - normal * 0.1f) - (Vector2)transform.position).normalized);
             }
         }
+
+        for (int i = 0; i < 30; i++)
+            getLineCastHit((Quaternion.AngleAxis(i * 12, Vector3.forward) * Vector2.right).normalized);
+            
 
         for (int i = 0; i < hitPoints.Count; i++)
-            Debug.DrawLine(transform.position, hitPoints[i]);
+            Debug.DrawLine(transform.position, hitPoints[i].vertexPos);
 
         if (hitPoints.Count == 0)
             return;
 
+        hitPoints.Sort((h1, h2) => h1.angle.CompareTo(h2.angle));
         hitPoints.Add(hitPoints[0]);
         int vertexCount = hitPoints.Count + 1;
         Vector3[] vertices = new Vector3[vertexCount];
@@ -102,7 +77,7 @@ public class Sight : MonoBehaviour {
 
         vertices[0] = Vector2.zero;
         for (int i = 0; i < vertexCount - 1; i++) {
-            vertices[i + 1] = transform.InverseTransformPoint(hitPoints[i]);
+            vertices[i + 1] = transform.InverseTransformPoint(hitPoints[i].vertexPos);
             if (i < vertexCount - 2) {
                 triangles[i * 3] = 0;
                 triangles[i * 3 + 1] = i + 2;
@@ -114,5 +89,18 @@ public class Sight : MonoBehaviour {
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
+    }
+
+    private RaycastHit2D getLineCastHit(Vector2 direction) {
+        RaycastHit2D hit = Physics2D.Linecast(transform.position, (Vector2)transform.position + direction * sightRadius, layerMask);
+        if (hit.collider != null) {
+            hitPoints.Add(new VertexPosWithAngle(hit.point, Vector2.SignedAngle(Vector2.one, hit.point - (Vector2)transform.position)));
+            hit.collider.gameObject.GetComponentInParent<SpriteRenderer>().material = defaultMaterial;
+        }
+        else {
+            Vector2 pos = (Vector2)transform.position + direction * sightRadius;
+            hitPoints.Add(new VertexPosWithAngle(pos, Vector2.SignedAngle(Vector2.one, pos - (Vector2)transform.position)));
+        }
+        return hit;
     }
 }

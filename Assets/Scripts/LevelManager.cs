@@ -118,18 +118,18 @@ public class LevelManager : MonoBehaviour {
             Vector2 coordinates = getRandomFreeTileCoordinates();
             blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], coordinates, Quaternion.identity, blockerObjectHolder) as Blocker);
         }
-        for (int i = 0; i < width; i++) {
-            Vector2 pos = getCoordinatesFor(i, 0);
-            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
-            pos = getCoordinatesFor(i, height - 1);
-            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
-        }
-        for (int k = 0; k < height; k++) {
-            Vector2 pos = getCoordinatesFor(0, k);
-            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
-            pos = getCoordinatesFor(width - 1, k);
-            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
-        }
+//        for (int i = 0; i < width; i++) {
+//            Vector2 pos = getCoordinatesFor(i, 0);
+//            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
+//            pos = getCoordinatesFor(i, height - 1);
+//            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
+//        }
+//        for (int k = 0; k < height; k++) {
+//            Vector2 pos = getCoordinatesFor(0, k);
+//            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
+//            pos = getCoordinatesFor(width - 1, k);
+//            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
+//        }
     }
 
     private void createPlayers(List<Player> playersToPlace) {

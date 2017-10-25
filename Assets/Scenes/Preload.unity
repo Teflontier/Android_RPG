@@ -208,10 +208,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad89c1bad6fee2245b72092de0b39daa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 10
-  height: 10
-  minBlockers: 6
-  maxBlockers: 9
+  width: 50
+  height: 50
+  minBlockers: 20
+  maxBlockers: 30
   minTileX: 0
   maxTileX: 0
   minTileY: 0
