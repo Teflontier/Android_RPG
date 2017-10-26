@@ -15,6 +15,7 @@ public abstract class Entity : Clickable {
         MOVE,
         MOVE_ENDED,
         ATTACK,
+        SHOW_SKILLS,
         END_TURN
     }
 
@@ -25,6 +26,7 @@ public abstract class Entity : Clickable {
 
     public EntityState state = EntityState.INITIALIZE;
     public GameObject clickedObject;
+    public Skill[] skills;
 
     [SerializeField] protected int hp = 0;
     protected int moves = 0;
@@ -50,6 +52,7 @@ public abstract class Entity : Clickable {
     public void initialize() {
         moves = maxMoves;
         attacks = maxAttacks;
+        skills = GetComponents<Skill>();
     }
 
     public void calcPossibleActions() {
@@ -66,7 +69,7 @@ public abstract class Entity : Clickable {
         if (attacks > 0) {
             floodFill(startingTile, attackRange, tile => true);
             foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in floodFilledTiles)
-                if (levelManager.isAttackable(pair.Key)  && !movableTiles.ContainsKey(pair.Key))
+                if (levelManager.isAttackable(pair.Key) && !movableTiles.ContainsKey(pair.Key))
                     attackableTiles.Add(pair.Key, pair.Value);
         }
 

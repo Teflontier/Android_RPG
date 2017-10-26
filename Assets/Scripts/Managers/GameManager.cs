@@ -103,8 +103,6 @@ public class GameManager : MonoBehaviour {
         float beta = ((v3.y - v1.y) * (p.x - v3.x) + (v1.x - v3.x) * (p.y - v3.y)) /
                      ((v2.y - v3.y) * (v1.x - v3.x) + (v3.x - v2.x) * (v1.y - v3.y));
         float gamma = 1.0f - alpha - beta;
-//        print(p + " " + v1 + " " + v2 + " " + v3);
-//        print(alpha + " " + beta + " " + gamma);
         return alpha > 0 && beta > 0 && gamma > 0;
     }
 

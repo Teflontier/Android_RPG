@@ -14,6 +14,7 @@ public class DDOL : MonoBehaviour {
 
     public GameObject greenOverlay;
     public GameObject redOverlay;
+    public GameObject skillButton;
 
     public void Awake() {
         DontDestroyOnLoad(gameObject);

@@ -38,7 +38,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4043403687997318}
   - component: {fileID: 212903452025228488}
-  - component: {fileID: 114518558083096532}
+  - component: {fileID: 114183523721700274}
+  - component: {fileID: 114325972289132052}
   m_Layer: 0
   m_Name: Warrior
   m_TagString: Untagged
@@ -112,6 +113,25 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1147663378609646}
   m_Mesh: {fileID: 0}
+--- !u!114 &114183523721700274
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1733558106550538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a636c186839f44c4683c840f28a508c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHp: 3
+  maxMoves: 4
+  attackRange: 2
+  maxAttacks: 2
+  state: 0
+  clickedObject: {fileID: 0}
+  skills: []
+  hp: 3
 --- !u!114 &114192308588666374
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -132,7 +152,7 @@ MonoBehaviour:
     m_Bits: 512
   defaultMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   customMaterial: {fileID: 2100000, guid: ec97f2f448dea574996ae4bcf41f4dd6, type: 2}
---- !u!114 &114518558083096532
+--- !u!114 &114325972289132052
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -140,16 +160,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1733558106550538}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 412c06695be391d47bbe668a3e1eda64, type: 3}
+  m_Script: {fileID: 11500000, guid: f3b1053ef6a9d1d478a17fe6962b1645, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 3
-  maxMoves: 4
-  attackRange: 2
-  maxAttacks: 2
-  state: 0
-  clickedObject: {fileID: 0}
-  hp: 3
+  image: {fileID: 21300000, guid: fb4f6feb735b20543a1d61f669b93237, type: 3}
 --- !u!212 &212903452025228488
 SpriteRenderer:
   m_ObjectHideFlags: 1

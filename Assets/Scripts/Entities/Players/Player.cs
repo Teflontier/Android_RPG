@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Reflection;
 
 public class Player : Entity {
     private const string MOVE = "Move";
     private const string ATTACK = "Attack";
     private const string END = "End";
+    private const string SKILL = "Skill";
+    private const string SKILL1 = "SkillButton1";
+    private const string SKILL2 = "SkillButton2";
+    private const string SKILL3 = "SkillButton3";
 
     private GameObject tileToUseActionOn;
     private GameObject lastMenuClicked;
@@ -42,6 +47,9 @@ public class Player : Entity {
             case EntityState.ATTACK:
                 handleAttack();
                 break;
+            case EntityState.SHOW_SKILLS:
+                handleShowSkills();
+                break;
             case EntityState.END_TURN:
                 commandMenu.setVisibility(false);
                 return true;
@@ -66,6 +74,12 @@ public class Player : Entity {
             commandMenu.setMoveVisibility(true);
         if (tile != null && attackableTiles.ContainsKey(tile) && levelManager.isAttackable(tile))
             commandMenu.setAttackVisibility(true);
+        foreach (Skill skill in skills) {
+            if (skill.canBeUsed(tileToUseActionOn)) {
+                commandMenu.setSkillVisibility(true);
+                break;
+            }
+        }
         commandMenu.setEndVisibility(true);
         state = EntityState.WAIT_FOR_MENU_SELECTION;
     }
@@ -79,23 +93,43 @@ public class Player : Entity {
         }
         lastMenuClicked = clickedObject;
         clickedObject = null;
-        if (lastMenuClicked.name.Equals(END)) {
-            levelManager.destroyOverlays();
-            commandMenu.setVisibility(false);
-            state = EntityState.END_TURN;
-            return;
-        }
-        if (lastMenuClicked.name.Equals(MOVE)) {
-            levelManager.destroyOverlays();
-            commandMenu.setVisibility(false);
-            state = EntityState.CALCULATE_ACTION_FIELDS;
-            return;
-        }
-        if(lastMenuClicked.name.Equals(ATTACK)){
-            levelManager.destroyOverlays();
-            commandMenu.setVisibility(false);
-            state = EntityState.ATTACK;
-            return;
+        switch (lastMenuClicked.name) {
+            case END:
+                levelManager.destroyOverlays();
+                commandMenu.setVisibility(false);
+                state = EntityState.END_TURN;
+                return;
+            case MOVE:
+                levelManager.destroyOverlays();
+                commandMenu.setVisibility(false);
+                state = EntityState.CALCULATE_ACTION_FIELDS;
+                return;
+            case ATTACK:
+                levelManager.destroyOverlays();
+                commandMenu.setVisibility(false);
+                state = EntityState.ATTACK;
+                return;
+            case SKILL:
+                state = EntityState.SHOW_SKILLS;
+                return;
+            case SKILL1:
+                skills[0].activate(tileToUseActionOn);
+                commandMenu.setVisibility(false);
+                levelManager.destroyOverlays();
+                state = EntityState.SHOW_POSSIBLE_MOVES;
+                return;
+            case SKILL2:
+                skills[1].activate(tileToUseActionOn);
+                commandMenu.setVisibility(false);
+                levelManager.destroyOverlays();
+                state = EntityState.SHOW_POSSIBLE_MOVES;
+                return;
+            case SKILL3:
+                skills[2].activate(tileToUseActionOn);
+                commandMenu.setVisibility(false);
+                levelManager.destroyOverlays();
+                state = EntityState.SHOW_POSSIBLE_MOVES;
+                return;
         }
     }
 
@@ -145,5 +179,15 @@ public class Player : Entity {
         attacks--;
         mob.increaseHp(-1);
         state = EntityState.SHOW_POSSIBLE_MOVES;
+    }
+
+    private void handleShowSkills() {
+        for (int i = 0; i < skills.Length; i++) {
+            if (skills[i].canBeUsed(tileToUseActionOn)) {
+                MethodInfo method = typeof(CommandMenu).GetMethod("setSkillButton" + (i + 1) + "Visibility");
+                method.Invoke(commandMenu, new object[]{ true });
+            }
+        }
+        state = EntityState.WAIT_FOR_MENU_SELECTION;
     }
 }
