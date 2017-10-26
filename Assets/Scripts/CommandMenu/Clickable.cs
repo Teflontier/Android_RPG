@@ -12,6 +12,6 @@ public class Clickable : MonoBehaviour, IPointerDownHandler {
     }
 
     public void OnPointerDown(PointerEventData eventData) {
-        gameManager.objectWasClicked(gameObject);
+        gameManager.objectWasClicked(gameObject, eventData.pressPosition);
     }
 }

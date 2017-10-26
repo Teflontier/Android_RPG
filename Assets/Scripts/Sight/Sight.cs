@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Sight : MonoBehaviour {
 
@@ -11,9 +12,10 @@ public class Sight : MonoBehaviour {
     public Material customMaterial;
     private MeshFilter meshFilter;
     private Mesh mesh;
-    private LevelManager levelManager;
     private List<Vector2> viewPoints = new List<Vector2>();
     private List<VertexPosWithAngle> hitPoints = new List<VertexPosWithAngle>();
+    private GameManager gameManager;
+    private LevelManager levelManager;
 
     public struct VertexPosWithAngle {
         public Vector2 vertexPos;
@@ -26,10 +28,13 @@ public class Sight : MonoBehaviour {
     }
 
     public void Awake() {
+        gameManager = GameObject.FindObjectOfType<GameManager>();
         levelManager = GameObject.FindObjectOfType<LevelManager>();
         meshFilter = GetComponent<MeshFilter>();
         mesh = new Mesh();
+        mesh.MarkDynamic();
         meshFilter.mesh = mesh;
+        gameManager.meshesToCheckClick.Add(mesh, transform);
     }
 
     void Update() {

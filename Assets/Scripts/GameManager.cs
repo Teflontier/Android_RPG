@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour {
         ACT
     }
 
+    public LayerMask menuLayer;
+    public Dictionary<Mesh, Transform> meshesToCheckClick = new Dictionary<Mesh, Transform>();
+
     private DDOL ddol;
     private LevelManager levelManager;
     private GameState state = GameState.INITIALIZE;
@@ -62,8 +65,47 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void objectWasClicked(GameObject obj) {
-        turnList[0].clickedObject = obj;
+    public void objectWasClicked(GameObject obj, Vector2 position) {
+        if (menuLayer == (menuLayer | (1 << obj.layer))) {
+            turnList[0].clickedObject = obj;
+            return;
+        }
+            
+
+        Vector2 worldPosition = Camera.main.ScreenToWorldPoint(position);
+        foreach (KeyValuePair<Mesh, Transform> pair in meshesToCheckClick) {
+            Mesh mesh = pair.Key;
+            Transform trans = pair.Value;
+
+            Vector3[] vertices = mesh.vertices;
+            int[] triangles = mesh.triangles;
+            int triangleCount = triangles.Length / 3;
+            bool inTriangle = false;
+            for (int i = 0; i < triangleCount; i++) {
+                Vector2 v1 = vertices[triangles[i * 3]];
+                Vector2 v2 = vertices[triangles[i * 3 + 1]];
+                Vector2 v3 = vertices[triangles[i * 3 + 2]];
+                if (checkPointInTriangle(trans.InverseTransformPoint(worldPosition), v1, v2, v3)) {
+                    inTriangle = true;
+                    break;
+                }
+            }
+            if (inTriangle) {
+                turnList[0].clickedObject = obj;
+                return;
+            }
+        }
+    }
+
+    private bool checkPointInTriangle(Vector2 p, Vector2 v1, Vector2 v2, Vector2 v3) {
+        float alpha = ((v2.y - v3.y) * (p.x - v3.x) + (v3.x - v2.x) * (p.y - v3.y)) /
+                      ((v2.y - v3.y) * (v1.x - v3.x) + (v3.x - v2.x) * (v1.y - v3.y));
+        float beta = ((v3.y - v1.y) * (p.x - v3.x) + (v1.x - v3.x) * (p.y - v3.y)) /
+                     ((v2.y - v3.y) * (v1.x - v3.x) + (v3.x - v2.x) * (v1.y - v3.y));
+        float gamma = 1.0f - alpha - beta;
+//        print(p + " " + v1 + " " + v2 + " " + v3);
+//        print(alpha + " " + beta + " " + gamma);
+        return alpha > 0 && beta > 0 && gamma > 0;
     }
 
     public void destroyEntity(Entity entity) {

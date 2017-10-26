@@ -208,10 +208,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad89c1bad6fee2245b72092de0b39daa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 50
-  height: 50
-  minBlockers: 20
-  maxBlockers: 30
+  width: 20
+  height: 20
+  minBlockers: 40
+  maxBlockers: 50
   minTileX: 0
   maxTileX: 0
   minTileY: 0
@@ -286,7 +286,7 @@ GameObject:
   - component: {fileID: 961202029}
   - component: {fileID: 961202030}
   - component: {fileID: 961202031}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: End
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -474,7 +474,7 @@ GameObject:
   - component: {fileID: 995396046}
   - component: {fileID: 995396045}
   - component: {fileID: 995396044}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -650,6 +650,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d08c99a976a39424f83c3c5485b35a5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menuLayer:
+    serializedVersion: 2
+    m_Bits: 32
 --- !u!1 &1201813582
 GameObject:
   m_ObjectHideFlags: 0
@@ -723,7 +726,7 @@ GameObject:
   - component: {fileID: 1217065079}
   - component: {fileID: 1217065081}
   - component: {fileID: 1217065080}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Move
   m_TagString: Untagged
   m_Icon: {fileID: 0}
