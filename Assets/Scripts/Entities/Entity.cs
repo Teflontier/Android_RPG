@@ -31,7 +31,6 @@ public abstract class Entity : Clickable {
     [SerializeField] protected int hp = 0;
     protected int moves = 0;
     protected int attacks = 0;
-    protected Dictionary<Tile, KeyValuePair<Tile, int>> floodFilledTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
     protected Dictionary<Tile, KeyValuePair<Tile, int>> movableTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
     protected Dictionary<Tile, KeyValuePair<Tile, int>> attackableTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
 
@@ -62,12 +61,12 @@ public abstract class Entity : Clickable {
         Vector2 startingPos = LevelManager.getIndicesFor(transform.position);
         Tile startingTile = levelManager.tileMatrix[(int)startingPos.x, (int)startingPos.y];
 
-        floodFill(startingTile, moves, tile => levelManager.isMovable(tile));
+        Dictionary<Tile, KeyValuePair<Tile, int>> floodFilledTiles = TileUtilities.floodFill(startingTile, moves, tile => levelManager.isMovable(tile));
         foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in floodFilledTiles)
             movableTiles.Add(pair.Key, pair.Value);
 
         if (attacks > 0) {
-            floodFill(startingTile, attackRange, tile => true);
+            floodFilledTiles = TileUtilities.floodFill(startingTile, attackRange, tile => true);
             foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in floodFilledTiles)
                 if (levelManager.isAttackable(pair.Key) && !movableTiles.ContainsKey(pair.Key))
                     attackableTiles.Add(pair.Key, pair.Value);
@@ -81,30 +80,6 @@ public abstract class Entity : Clickable {
         foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in attackableTiles)
             if (!pair.Key.transform.position.Equals(startingTile.transform.position))
                 levelManager.createOverlay(ddol.redOverlay, pair.Key.transform.position);
-    }
-
-    public void floodFill(Tile startingTile, int searchDepth, Predicate<Tile> filter) {
-        floodFilledTiles.Clear();
-        List<Tile> tilesToCheck = new List<Tile>();
-        tilesToCheck.Add(startingTile);
-
-        while (tilesToCheck.Count > 0) {
-            Tile tileToCheck = tilesToCheck[0];
-            tilesToCheck.RemoveAt(0);
-            if (tileToCheck != startingTile)
-                searchDepth = floodFilledTiles[tileToCheck].Value - 1;
-            if (searchDepth > 0)
-                tilesToCheck.AddRange(getAdjacentTilesFiltered(searchDepth, tileToCheck, filter));
-        }
-    }
-
-    public List<Tile> getAdjacentTilesFiltered(int searchDepth, Tile tile, Predicate<Tile> filter) {
-        List<Tile> surroundingTiles = new List<Tile>();
-        tile.getSurroundingTiles().FindAll(t => (!floodFilledTiles.ContainsKey(t) && filter(t))).ForEach(adjacentTile => {
-                surroundingTiles.Add(adjacentTile);
-                floodFilledTiles.Add(adjacentTile, new KeyValuePair<Tile, int>(tile, searchDepth));
-            });
-        return surroundingTiles;
     }
 
     public void increaseHp(int increment) {
