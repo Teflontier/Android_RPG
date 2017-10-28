@@ -136,17 +136,7 @@ public class Player : Entity {
     private void handleCalculateActionFields() {
         Tile targetTile = tileToUseActionOn.GetComponent<Tile>();
         tilesToMove.Clear();
-        print("start");
-
-//        tilesToMove = TileUtilities.getShortestWayFromFloodFilledTiles<int>(movableTiles, targetTile);
-        print("end");
-        if (lastMenuClicked.name.Equals(MOVE))
-            tilesToMove.Add(targetTile);
-        WrappedTile<int> temp = null;
-//        while ((temp = TileUtilities.getWrappedTileInFloodFilledTiles(movableTiles, targetTile)) != null) {
-//            targetTile = temp.tile;
-//            tilesToMove.Insert(0, targetTile);
-//        }
+        tilesToMove = TileUtilities.getShortestWayFromFloodFilledTiles<int>(movableTiles, targetTile);
         tilesToMove.RemoveAt(0);
         state = EntityState.MOVE;
     }

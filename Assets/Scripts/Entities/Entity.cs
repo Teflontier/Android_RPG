@@ -61,7 +61,7 @@ public abstract class Entity : Clickable {
         Vector2 startingPos = LevelManager.getIndicesFor(transform.position);
         Tile startingTile = levelManager.tileMatrix[(int)startingPos.x, (int)startingPos.y];
          
-        Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> floodFilledTiles = TileUtilities.floodFill<int>(startingTile, moves, adjacentTilesFilter: tile => levelManager.isMovable(tile));
+        Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> floodFilledTiles = TileUtilities.floodFill<int>(startingTile, moves, adjacentTilesFilter: tile => levelManager.isMovable(tile) && tile != startingTile);
         foreach (KeyValuePair<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> pair in floodFilledTiles)
             movableTiles.Add(pair.Key, pair.Value);
 

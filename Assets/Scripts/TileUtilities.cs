@@ -9,12 +9,10 @@ public class TileUtilities : MonoBehaviour {
     public static List<Tile> getShortestWayFromFloodFilledTiles<T>(Dictionary<WrappedTile<T>, KeyValuePair<WrappedTile<T>, int>> floodFilledTiles, Tile targetTile) {
         List<Tile> shortestWay = new List<Tile>();
         Tile tile = targetTile;
-        shortestWay.Insert(0, tile);
+        shortestWay.Add(tile);
         WrappedTile<T> temp = null;
-        while ((temp = getWrappedTileInFloodFilledTiles(floodFilledTiles, tile)) != null){
-            print(temp);
+        while ((temp = getWrappedTileInFloodFilledTiles(floodFilledTiles, tile)) != null)
             shortestWay.Insert(0, tile = floodFilledTiles[temp].Key.tile);
-        }
         return shortestWay;
     }
 
