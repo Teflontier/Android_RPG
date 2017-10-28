@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour {
 
+    public static LevelManager instance;
+
     public int width = 10;
     public int height = 10;
 
@@ -35,6 +37,7 @@ public class LevelManager : MonoBehaviour {
         blockerObjectHolder = transform.Find("Blockers");
         overlayObjectHolder = transform.Find("Overlays");
         tileMatrix = new Tile[width, height];
+        instance = this;
     }
 
     public void createLevel(List<Player> playersToPlace) {

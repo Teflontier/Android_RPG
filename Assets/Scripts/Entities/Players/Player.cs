@@ -70,9 +70,9 @@ public class Player : Entity {
         Vector2 clickedPos = tileToUseActionOn.transform.position;
         commandMenu.transform.position = new Vector2(clickedPos.x, clickedPos.y + 1);
         Tile tile = tileToUseActionOn.GetComponent<Tile>();
-        if (tile != null && movableTiles.ContainsKey(tile))
+        if (tile != null && TileUtilities.getWrappedTileInFloodFilledTiles(movableTiles, tile) != null)
             commandMenu.setMoveVisibility(true);
-        if (tile != null && attackableTiles.ContainsKey(tile) && levelManager.isAttackable(tile))
+        if (tile != null && TileUtilities.getWrappedTileInFloodFilledTiles(attackableTiles, tile) != null && levelManager.isAttackable(tile))
             commandMenu.setAttackVisibility(true);
         foreach (Skill skill in skills) {
             if (skill.canBeUsed(tileToUseActionOn)) {
@@ -134,14 +134,19 @@ public class Player : Entity {
     }
 
     private void handleCalculateActionFields() {
-        Tile tile = tileToUseActionOn.GetComponent<Tile>();
+        Tile targetTile = tileToUseActionOn.GetComponent<Tile>();
         tilesToMove.Clear();
+        print("start");
+
+//        tilesToMove = TileUtilities.getShortestWayFromFloodFilledTiles<int>(movableTiles, targetTile);
+        print("end");
         if (lastMenuClicked.name.Equals(MOVE))
-            tilesToMove.Add(tile);
-        while (movableTiles.ContainsKey(tile)) {
-            tile = movableTiles[tile].Key;
-            tilesToMove.Insert(0, tile);
-        }
+            tilesToMove.Add(targetTile);
+        WrappedTile<int> temp = null;
+//        while ((temp = TileUtilities.getWrappedTileInFloodFilledTiles(movableTiles, targetTile)) != null) {
+//            targetTile = temp.tile;
+//            tilesToMove.Insert(0, targetTile);
+//        }
         tilesToMove.RemoveAt(0);
         state = EntityState.MOVE;
     }

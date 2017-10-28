@@ -31,8 +31,8 @@ public abstract class Entity : Clickable {
     [SerializeField] protected int hp = 0;
     protected int moves = 0;
     protected int attacks = 0;
-    protected Dictionary<Tile, KeyValuePair<Tile, int>> movableTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
-    protected Dictionary<Tile, KeyValuePair<Tile, int>> attackableTiles = new Dictionary<Tile, KeyValuePair<Tile, int>>();
+    protected Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> movableTiles = new Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>>();
+    protected Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> attackableTiles = new Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>>();
 
     protected DDOL ddol;
     protected LevelManager levelManager;
@@ -60,26 +60,26 @@ public abstract class Entity : Clickable {
 
         Vector2 startingPos = LevelManager.getIndicesFor(transform.position);
         Tile startingTile = levelManager.tileMatrix[(int)startingPos.x, (int)startingPos.y];
-
-        Dictionary<Tile, KeyValuePair<Tile, int>> floodFilledTiles = TileUtilities.floodFill(startingTile, moves, tile => levelManager.isMovable(tile));
-        foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in floodFilledTiles)
+         
+        Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> floodFilledTiles = TileUtilities.floodFill<int>(startingTile, moves, adjacentTilesFilter: tile => levelManager.isMovable(tile));
+        foreach (KeyValuePair<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> pair in floodFilledTiles)
             movableTiles.Add(pair.Key, pair.Value);
 
         if (attacks > 0) {
-            floodFilledTiles = TileUtilities.floodFill(startingTile, attackRange, tile => true);
-            foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in floodFilledTiles)
-                if (levelManager.isAttackable(pair.Key) && !movableTiles.ContainsKey(pair.Key))
+            floodFilledTiles = TileUtilities.floodFill<int>(startingTile, attackRange);
+            foreach (KeyValuePair<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> pair in floodFilledTiles)
+                if (levelManager.isAttackable(pair.Key.tile) && !movableTiles.ContainsKey(pair.Key))
                     attackableTiles.Add(pair.Key, pair.Value);
         }
 
-        foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in movableTiles) {
-            Tile key = pair.Key;
+        foreach (KeyValuePair<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> pair in movableTiles) {
+            Tile key = pair.Key.tile;
             if (!key.transform.position.Equals(startingTile.transform.position))
                 levelManager.createOverlay(ddol.greenOverlay, key.transform.position);
         }
-        foreach (KeyValuePair<Tile, KeyValuePair<Tile, int>> pair in attackableTiles)
-            if (!pair.Key.transform.position.Equals(startingTile.transform.position))
-                levelManager.createOverlay(ddol.redOverlay, pair.Key.transform.position);
+        foreach (KeyValuePair<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> pair in attackableTiles)
+            if (!pair.Key.tile.transform.position.Equals(startingTile.transform.position))
+                levelManager.createOverlay(ddol.redOverlay, pair.Key.tile.transform.position);
     }
 
     public void increaseHp(int increment) {
