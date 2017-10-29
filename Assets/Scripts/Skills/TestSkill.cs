@@ -4,12 +4,18 @@ using UnityEngine;
 
 public class TestSkill : Skill {
 
-    public override void activate(GameObject target){
-        print(owner + " activated TestSkill on " + target);
+    public int range = 7;
+
+    public override void activate(GameObject target) {
+        owner.transform.position = target.transform.position;
     }
 
     public override bool canBeUsed(GameObject target) {
-        
-        return true;
+        Tile startingTile = levelManager.getTileForPosition(owner.transform.position);
+        Tile targetTile = target.GetComponent<Tile>();
+        if (targetTile == null)
+            return false;
+        Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> floodFilledTiles = TileUtilities.floodFill<int>(startingTile, targetTile: targetTile);
+        return levelManager.isMovable(targetTile) && TileUtilities.getShortestWayFromFloodFilledTiles(floodFilledTiles, startingTile, targetTile).Count <= range;
     }
 }

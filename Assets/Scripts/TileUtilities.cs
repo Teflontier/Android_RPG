@@ -6,13 +6,16 @@ using System.Linq;
 
 public class TileUtilities : MonoBehaviour {
 
-    public static List<Tile> getShortestWayFromFloodFilledTiles<T>(Dictionary<WrappedTile<T>, KeyValuePair<WrappedTile<T>, int>> floodFilledTiles, Tile targetTile) {
+    public static List<Tile> getShortestWayFromFloodFilledTiles<T>(Dictionary<WrappedTile<T>, KeyValuePair<WrappedTile<T>, int>> floodFilledTiles, Tile startingTile, Tile targetTile) {
         List<Tile> shortestWay = new List<Tile>();
-        Tile tile = targetTile;
-        shortestWay.Add(tile);
-        WrappedTile<T> temp = null;
-        while ((temp = getWrappedTileInFloodFilledTiles(floodFilledTiles, tile)) != null)
-            shortestWay.Insert(0, tile = floodFilledTiles[temp].Key.tile);
+        WrappedTile<T> tile = getWrappedTileInFloodFilledTiles(floodFilledTiles, targetTile);
+        if (tile == null)
+            return null;
+        shortestWay.Add(tile.tile);
+        while (floodFilledTiles.ContainsKey(tile) && floodFilledTiles[tile].Key.tile != startingTile)
+            shortestWay.Insert(0, (tile = floodFilledTiles[tile].Key).tile);
+        if (!startingTile.getSurroundingTiles().Contains(tile.tile))
+            return null;
         return shortestWay;
     }
 
@@ -23,14 +26,16 @@ public class TileUtilities : MonoBehaviour {
 
     public static Dictionary<WrappedTile<T>, KeyValuePair<WrappedTile<T>, int>> floodFill<T>(Tile startingTile, int searchDepth = -1, Predicate<Tile> adjacentTilesFilter = null, Tile targetTile = null, Func<Tile, T> heuristicForShortestPath = null, Comparer<T> insertionComparer = null) {
         if (searchDepth < 0 && targetTile == null)
-            throw new Exception("Search depth is infinity and target tile is null -> endless loop");
+            throw new UnityException("Search depth is infinity and target tile is null -> endless loop");
 
         Dictionary<WrappedTile<T>, KeyValuePair<WrappedTile<T>, int>> floodFilledTiles = new Dictionary<WrappedTile<T>, KeyValuePair<WrappedTile<T>, int>>();
         List<WrappedTile<T>> tilesToCheck = new List<WrappedTile<T>>();
        
         bool doHeuristicInsertion = heuristicForShortestPath != null && insertionComparer != null;
-        tilesToCheck.Add(new WrappedTile<T>(startingTile, doHeuristicInsertion ? heuristicForShortestPath(startingTile) : default(T)));
+        WrappedTile<T> wrappedStartingTile = new WrappedTile<T>(startingTile, doHeuristicInsertion ? heuristicForShortestPath(startingTile) : default(T));
+        tilesToCheck.Add(wrappedStartingTile);
 
+        Predicate<Tile> adjacentTilesFilterPlusNotStartingTile = (tile => tile != startingTile && (adjacentTilesFilter == null ? true : adjacentTilesFilter(tile)));
         int currentSeachDepth = searchDepth;
         while (tilesToCheck.Count > 0) {
             WrappedTile<T> tileToCheck = tilesToCheck[0];
@@ -39,7 +44,10 @@ public class TileUtilities : MonoBehaviour {
                 currentSeachDepth = floodFilledTiles[tileToCheck].Value - 1;
             if (currentSeachDepth == 0)
                 continue;
-            List<WrappedTile<T>> adjacentTiles = getAdjacentTilesFiltered(tileToCheck, adjacentTilesFilter, currentSeachDepth, floodFilledTiles);
+            List<WrappedTile<T>> adjacentTiles = getAdjacentTilesFiltered(tileToCheck, adjacentTilesFilterPlusNotStartingTile, currentSeachDepth, floodFilledTiles);
+            foreach (WrappedTile<T> adTile in adjacentTiles)
+                if (adTile.tile.transform.position.Equals(startingTile.transform.position))
+                    print("ad cont: true");
             if (doHeuristicInsertion)
                 insertTilesOrdered(insertionComparer, adjacentTiles, tilesToCheck);
             else
@@ -58,7 +66,7 @@ public class TileUtilities : MonoBehaviour {
                     return false;
                 if (!floodFilledTilesGiven)
                     return true;
-                return floodFilledTiles.Where(pair => pair.Key.tile == t).Select(pair => pair.Key.tile).FirstOrDefault() == null;
+                return getWrappedTileInFloodFilledTiles(floodFilledTiles, t) == null;
             }).ForEach(adjacentTile => {
                 WrappedTile<T> wrappedAdjacentTile = new WrappedTile<T>(adjacentTile, heuristicForShortestPath != null ? heuristicForShortestPath(adjacentTile) : default(T));
                 surroundingTiles.Add(wrappedAdjacentTile);

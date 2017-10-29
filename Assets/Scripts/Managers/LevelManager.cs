@@ -43,7 +43,7 @@ public class LevelManager : MonoBehaviour {
     public void createLevel(List<Player> playersToPlace) {
         destroyLevel();
         createTiles();
-        createBlockers();
+        createBlockers(false);
         entities.Clear();
         playersToPlace.ForEach(player => entities.Add(player));
         createPlayers(playersToPlace);
@@ -116,23 +116,25 @@ public class LevelManager : MonoBehaviour {
         }
     }
 
-    private void createBlockers() {
+    private void createBlockers(bool surroundMapWithBlockers) {
         for (int i = 0; i < Random.Range(minBlockers, maxBlockers); i++) {
             Vector2 coordinates = getRandomFreeTileCoordinates();
             blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], coordinates, Quaternion.identity, blockerObjectHolder) as Blocker);
         }
-//        for (int i = 0; i < width; i++) {
-//            Vector2 pos = getCoordinatesFor(i, 0);
-//            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
-//            pos = getCoordinatesFor(i, height - 1);
-//            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
-//        }
-//        for (int k = 0; k < height; k++) {
-//            Vector2 pos = getCoordinatesFor(0, k);
-//            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
-//            pos = getCoordinatesFor(width - 1, k);
-//            blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
-//        }
+        if (surroundMapWithBlockers) {
+            for (int i = 0; i < width; i++) {
+                Vector2 pos = getCoordinatesFor(i, 0);
+                blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
+                pos = getCoordinatesFor(i, height - 1);
+                blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
+            }
+            for (int k = 0; k < height; k++) {
+                Vector2 pos = getCoordinatesFor(0, k);
+                blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
+                pos = getCoordinatesFor(width - 1, k);
+                blockers.Add(GameObject.Instantiate(ddol.blockers[Random.Range(0, ddol.blockers.Count)], pos, Quaternion.identity, blockerObjectHolder) as Blocker);
+            }
+        }
     }
 
     private void createPlayers(List<Player> playersToPlace) {
@@ -189,7 +191,7 @@ public class LevelManager : MonoBehaviour {
         return getCoordinatesFor(indices.x, indices.y);
     }
 
-    public static Vector2 getIndicesFor(float posX, float posY) {
+    public static Vector2 getIndicesForPosition(float posX, float posY) {
         posY = posY / 0.75f;
         Vector2 pos = new Vector2(posX, posY);
         if (posY % 2 != 0)
@@ -197,8 +199,13 @@ public class LevelManager : MonoBehaviour {
         return pos;
     }
 
-    public static Vector2 getIndicesFor(Vector2 pos) {
-        return getIndicesFor(pos.x, pos.y);
+    public static Vector2 getIndicesForPosition(Vector2 pos) {
+        return getIndicesForPosition(pos.x, pos.y);
+    }
+
+    public Tile getTileForPosition(Vector2 pos) {
+        Vector2 indices = getIndicesForPosition(pos);
+        return tileMatrix[(int)indices.x, (int)indices.y];
     }
 
     public GameObject getGameObjectOnTile(Tile tile) {

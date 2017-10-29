@@ -136,7 +136,7 @@ public class Player : Entity {
     private void handleCalculateActionFields() {
         Tile targetTile = tileToUseActionOn.GetComponent<Tile>();
         tilesToMove.Clear();
-        tilesToMove = TileUtilities.getShortestWayFromFloodFilledTiles<int>(movableTiles, targetTile);
+        tilesToMove = TileUtilities.getShortestWayFromFloodFilledTiles<int>(movableTiles, levelManager.getTileForPosition(transform.position), targetTile);
         tilesToMove.RemoveAt(0);
         state = EntityState.MOVE;
     }

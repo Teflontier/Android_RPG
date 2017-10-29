@@ -6,9 +6,11 @@ public abstract class Skill : MonoBehaviour {
 
     public Sprite image;
     protected Entity owner;
+    protected LevelManager levelManager;
 
     public void Awake() {
         owner = gameObject.GetComponent<Entity>();
+        levelManager = GameObject.FindObjectOfType<LevelManager>();
     }
 
     public abstract void activate(GameObject target);
