@@ -131,6 +131,7 @@ MonoBehaviour:
   state: 0
   clickedObject: {fileID: 0}
   skills: []
+  spriteRenderer: {fileID: 0}
   hp: 3
 --- !u!114 &114192308588666374
 MonoBehaviour:
@@ -160,7 +161,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1733558106550538}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3b1053ef6a9d1d478a17fe6962b1645, type: 3}
+  m_Script: {fileID: 11500000, guid: 675eac5c120bb0c44b2bf56fce2a072d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 21300000, guid: fb4f6feb735b20543a1d61f669b93237, type: 3}

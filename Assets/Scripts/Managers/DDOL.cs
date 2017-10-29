@@ -14,14 +14,14 @@ public class DDOL : MonoBehaviour {
 
     public GameObject greenOverlay;
     public GameObject redOverlay;
-    public GameObject skillButton;
+    public GameObject teleportationParticles;
 
     public void Awake() {
         DontDestroyOnLoad(gameObject);
         SceneManager.LoadScene("Main");
     }
 
-    public void Start(){
+    public void Start() {
         transform.Find("GameManager").GetComponent<GameManager>().startGame();
     }
 }

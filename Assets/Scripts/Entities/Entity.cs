@@ -16,6 +16,7 @@ public abstract class Entity : Clickable {
         MOVE_ENDED,
         ATTACK,
         SHOW_SKILLS,
+        USING_SKILL,
         END_TURN
     }
 
@@ -27,6 +28,8 @@ public abstract class Entity : Clickable {
     public EntityState state = EntityState.INITIALIZE;
     public GameObject clickedObject;
     public Skill[] skills;
+
+    [HideInInspector]public SpriteRenderer spriteRenderer;
 
     [SerializeField] protected int hp = 0;
     protected int moves = 0;
@@ -44,6 +47,7 @@ public abstract class Entity : Clickable {
         levelManager = GameObject.FindObjectOfType<LevelManager>();
         gameManager = GameObject.FindObjectOfType<GameManager>();
         commandMenu = GameObject.FindObjectOfType<CommandMenu>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     public abstract bool act();

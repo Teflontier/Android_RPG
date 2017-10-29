@@ -15,11 +15,16 @@ public class Player : Entity {
     private GameObject tileToUseActionOn;
     private GameObject lastMenuClicked;
     private List<Tile> tilesToMove = new List<Tile>();
+    private Skill currentSkillInUse;
 
     public override bool act() {
         switch (state) {
             case EntityState.INITIALIZE:
                 initialize();
+                tileToUseActionOn = null;
+                lastMenuClicked = null;
+                tilesToMove.Clear();
+                currentSkillInUse = null;
                 state = EntityState.SHOW_POSSIBLE_MOVES;
                 break;
             case EntityState.SHOW_POSSIBLE_MOVES:
@@ -49,6 +54,10 @@ public class Player : Entity {
                 break;
             case EntityState.SHOW_SKILLS:
                 handleShowSkills();
+                break;
+            case EntityState.USING_SKILL:
+                if (handleUsingSkill())
+                    state = EntityState.SHOW_POSSIBLE_MOVES;
                 break;
             case EntityState.END_TURN:
                 commandMenu.setVisibility(false);
@@ -113,22 +122,25 @@ public class Player : Entity {
                 state = EntityState.SHOW_SKILLS;
                 return;
             case SKILL1:
-                skills[0].activate(tileToUseActionOn);
+                currentSkillInUse = skills[0];
+                currentSkillInUse.initialize(tileToUseActionOn);
                 commandMenu.setVisibility(false);
                 levelManager.destroyOverlays();
-                state = EntityState.SHOW_POSSIBLE_MOVES;
+                state = EntityState.USING_SKILL;
                 return;
             case SKILL2:
-                skills[1].activate(tileToUseActionOn);
+                currentSkillInUse = skills[1];
+                currentSkillInUse.initialize(tileToUseActionOn);
                 commandMenu.setVisibility(false);
                 levelManager.destroyOverlays();
-                state = EntityState.SHOW_POSSIBLE_MOVES;
+                state = EntityState.USING_SKILL;
                 return;
             case SKILL3:
-                skills[2].activate(tileToUseActionOn);
+                currentSkillInUse = skills[2];
+                currentSkillInUse.initialize(tileToUseActionOn);
                 commandMenu.setVisibility(false);
                 levelManager.destroyOverlays();
-                state = EntityState.SHOW_POSSIBLE_MOVES;
+                state = EntityState.USING_SKILL;
                 return;
         }
     }
@@ -184,5 +196,9 @@ public class Player : Entity {
             }
         }
         state = EntityState.WAIT_FOR_MENU_SELECTION;
+    }
+
+    private bool handleUsingSkill() {
+        return currentSkillInUse.activate(tileToUseActionOn);
     }
 }
