@@ -145,8 +145,10 @@ public class LevelManager : MonoBehaviour {
     }
 
     private void createMobs() {
-        Vector2 coordinates = getRandomFreeTileCoordinates();
-        entities.Add(GameObject.Instantiate(ddol.mobs[Random.Range(0, ddol.mobs.Count)], coordinates, Quaternion.identity, mobObjectHolder) as Mob);
+        for (int i = 0; i < 50; i++) {
+            Vector2 coordinates = getRandomFreeTileCoordinates();
+            entities.Add(GameObject.Instantiate(ddol.mobs[Random.Range(0, ddol.mobs.Count)], coordinates, Quaternion.identity, mobObjectHolder) as Mob);
+        }
     }
 
     private Vector2 getRandomCoordinates() {

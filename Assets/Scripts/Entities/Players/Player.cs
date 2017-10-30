@@ -25,6 +25,7 @@ public class Player : Entity {
                 lastMenuClicked = null;
                 tilesToMove.Clear();
                 currentSkillInUse = null;
+                enemyKilled = false;
                 state = EntityState.SHOW_POSSIBLE_MOVES;
                 break;
             case EntityState.SHOW_POSSIBLE_MOVES:
@@ -149,7 +150,6 @@ public class Player : Entity {
         Tile targetTile = tileToUseActionOn.GetComponent<Tile>();
         tilesToMove.Clear();
         tilesToMove = TileUtilities.getShortestWayFromFloodFilledTiles<int>(movableTiles, levelManager.getTileForPosition(transform.position), targetTile);
-        tilesToMove.RemoveAt(0);
         state = EntityState.MOVE;
     }
 
@@ -183,8 +183,20 @@ public class Player : Entity {
 
     private void handleAttack() {
         Mob mob = levelManager.getGameObjectOnTile(tileToUseActionOn.GetComponent<Tile>()).GetComponent<Mob>();
-        attacks--;
-        mob.increaseHp(-1);
+        if (attackCountExtra > 0)
+            attackCountExtra--;
+        else
+            attackCountCurrent--;
+        changeModifiersAndRecalculate(modifier => {
+                if (modifier.attacks > 0)
+                    modifier.attacks--;
+            });
+        mob.increaseHp(-attackDamage);
+        if (mob.hp <= 0) {
+            enemyKilled = true;
+            recalculateModifiers();
+            enemyKilled = false;
+        }
         state = EntityState.SHOW_POSSIBLE_MOVES;
     }
 

@@ -20,10 +20,33 @@ public abstract class Entity : Clickable {
         END_TURN
     }
 
-    public int maxHp = 3;
-    public int maxMoves = 3;
     public int attackRange = 1;
-    public int maxAttacks = 2;
+
+    public float attackDamage
+    {
+        get { 
+            float temp = attackDamageBase + attackDamageModifiersAbsolute;
+            return temp + temp * attackDamageModifiersPercentage; 
+        }
+    }
+
+    public int attacks{ get { return attackCountCurrent + attackCountExtra; } }
+
+    public int maxHp = 3;
+    public float hp = 0;
+
+    public int maxMoves = 3;
+    public int moves = 0;
+
+    public float attackDamageBase = 1f;
+    public float attackDamageModifiersAbsolute = 0f;
+    public float attackDamageModifiersPercentage = 0f;
+
+    public int attackCountBase = 2;
+    public int attackCountExtra = 0;
+    public int attackCountCurrent = 0;
+
+    public bool enemyKilled = false;
 
     public EntityState state = EntityState.INITIALIZE;
     public GameObject clickedObject;
@@ -31,9 +54,6 @@ public abstract class Entity : Clickable {
 
     [HideInInspector]public SpriteRenderer spriteRenderer;
 
-    [SerializeField] protected int hp = 0;
-    protected int moves = 0;
-    protected int attacks = 0;
     protected Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> movableTiles = new Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>>();
     protected Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> attackableTiles = new Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>>();
 
@@ -54,8 +74,24 @@ public abstract class Entity : Clickable {
 
     public void initialize() {
         moves = maxMoves;
-        attacks = maxAttacks;
+        attackCountCurrent = attackCountBase;
         skills = GetComponents<Skill>();
+        changeModifiersAndRecalculate(modifier => {
+                if (modifier.runTime > 0)
+                    modifier.runTime--;
+            });
+    }
+
+    public void changeModifiersAndRecalculate(Action<Modifier> change) {
+        List<Modifier> modifierExclusionList = new List<Modifier>();
+        foreach (Modifier modifier in gameObject.GetComponents<Modifier>()) {
+            change(modifier);
+            if (!modifier.checkAliveConditions()) {
+                Destroy(modifier);
+                modifierExclusionList.Add(modifier);
+            }
+        }
+        recalculateModifiers(modifierExclusionList);
     }
 
     public void calcPossibleActions() {
@@ -85,10 +121,19 @@ public abstract class Entity : Clickable {
                 levelManager.createOverlay(ddol.redOverlay, pair.Key.tile.transform.position);
     }
 
-    public void increaseHp(int increment) {
+    public void increaseHp(float increment) {
         hp += increment;
+        recalculateModifiers();
         if (hp > 0)
             return;
         gameManager.destroyEntity(this);
+    }
+
+    public void recalculateModifiers(List<Modifier> exclusionList = null) {
+        attackDamageModifiersAbsolute = 0;
+        attackDamageModifiersPercentage = 0;
+        foreach (Modifier modifier in gameObject.GetComponents<Modifier>())
+            if (exclusionList == null || exclusionList != null && !exclusionList.Contains(modifier))
+                modifier.modify();
     }
 }

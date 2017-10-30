@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4393146190207884}
   - component: {fileID: 212257327337155516}
   - component: {fileID: 114261917140499202}
+  - component: {fileID: 95149252428529404}
   m_Layer: 0
   m_Name: Zombie
   m_TagString: Untagged
@@ -36,11 +37,28 @@ Transform:
   m_GameObject: {fileID: 1063220426629640}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &95149252428529404
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1063220426629640}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 233b0d3f56014294a9f89068a4fad010, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114261917140499202
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -52,13 +70,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87655008fe29ea143867c62441fddfe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 3
-  maxMoves: 3
   attackRange: 1
-  maxAttacks: 2
+  maxHp: 2
+  hp: 2
+  maxMoves: 3
+  moves: 0
+  attackDamageBase: 1
+  attackDamageModifiersAbsolute: 0
+  attackDamageModifiersPercentage: 0
+  attackCountBase: 2
+  attackCountExtra: 0
+  attackCountCurrent: 0
+  enemyKilled: 0
   state: 0
   clickedObject: {fileID: 0}
-  hp: 3
+  skills: []
+  spriteRenderer: {fileID: 0}
 --- !u!212 &212257327337155516
 SpriteRenderer:
   m_ObjectHideFlags: 1
