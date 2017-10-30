@@ -33,9 +33,8 @@ public class AccumulatedHatred : Skill {
         Tile startingTile = levelManager.getTileForPosition(owner.transform.position);
         if (getEntityOnTile(target) == null)
             return false;
-        Vector2 direction = target.transform.position - owner.transform.position;
-        float distance = direction.magnitude;
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(owner.transform.position, snapDist, direction.normalized, distance, layerMask);
+        float distance = (target.transform.position - owner.transform.position).magnitude;
+        RaycastHit2D[] hits = Physics2D.LinecastAll(owner.transform.position, target.transform.position, layerMask);
         foreach (RaycastHit2D hit in hits) {
             Tile hitTile = hit.collider.gameObject.GetComponent<Tile>();
             Entity hitEntity = null;
