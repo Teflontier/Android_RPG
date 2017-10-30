@@ -12,7 +12,7 @@ public class Player : Entity {
     private const string SKILL2 = "SkillButton2";
     private const string SKILL3 = "SkillButton3";
 
-    private GameObject tileToUseActionOn;
+    private Tile tileToUseActionOn;
     private GameObject lastMenuClicked;
     private List<Tile> tilesToMove = new List<Tile>();
     private Skill currentSkillInUse;
@@ -70,7 +70,7 @@ public class Player : Entity {
     private void handleWaitForAction() {
         if (clickedObject == null)
             return;
-        tileToUseActionOn = clickedObject;
+        tileToUseActionOn = clickedObject.GetComponent<Tile>();
         clickedObject = null;
         state = EntityState.CREATE_COMMAND_MENU;
     }
@@ -79,10 +79,10 @@ public class Player : Entity {
         commandMenu.setVisibility(false);
         Vector2 clickedPos = tileToUseActionOn.transform.position;
         commandMenu.transform.position = new Vector2(clickedPos.x, clickedPos.y + 1);
-        Tile tile = tileToUseActionOn.GetComponent<Tile>();
-        if (tile != null && TileUtilities.getWrappedTileInFloodFilledTiles(movableTiles, tile) != null)
+        Tile tile = tileToUseActionOn;
+        if (TileUtilities.getWrappedTileInFloodFilledTiles(movableTiles, tileToUseActionOn) != null)
             commandMenu.setMoveVisibility(true);
-        if (tile != null && TileUtilities.getWrappedTileInFloodFilledTiles(attackableTiles, tile) != null && levelManager.isAttackable(tile))
+        if (TileUtilities.getWrappedTileInFloodFilledTiles(attackableTiles, tileToUseActionOn) != null && levelManager.isAttackable(tile))
             commandMenu.setAttackVisibility(true);
         foreach (Skill skill in skills) {
             if (skill.canBeUsed(tileToUseActionOn)) {
@@ -147,9 +147,8 @@ public class Player : Entity {
     }
 
     private void handleCalculateActionFields() {
-        Tile targetTile = tileToUseActionOn.GetComponent<Tile>();
         tilesToMove.Clear();
-        tilesToMove = TileUtilities.getShortestWayFromFloodFilledTiles<int>(movableTiles, levelManager.getTileForPosition(transform.position), targetTile);
+        tilesToMove = TileUtilities.getShortestWayFromFloodFilledTiles<int>(movableTiles, levelManager.getTileForPosition(transform.position), tileToUseActionOn);
         state = EntityState.MOVE;
     }
 
@@ -182,7 +181,7 @@ public class Player : Entity {
     }
 
     private void handleAttack() {
-        Mob mob = levelManager.getGameObjectOnTile(tileToUseActionOn.GetComponent<Tile>()).GetComponent<Mob>();
+        Mob mob = levelManager.getGameObjectOnTile(tileToUseActionOn).GetComponent<Mob>();
         if (attackCountExtra > 0)
             attackCountExtra--;
         else

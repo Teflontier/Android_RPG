@@ -10,14 +10,14 @@ public class Teleport : Skill {
     private float colorAlpha = 0.5f;
     private GameObject particles;
 
-    public override void initialize(GameObject target) {
+    public override void initialize(Tile target) {
         Color color = owner.spriteRenderer.color;
         color.a = colorAlpha;
         owner.spriteRenderer.color = color;
         particles = GameObject.Instantiate(ddol.teleportationParticles, owner.gameObject.transform);
     }
 
-    public override bool activate(GameObject target) {
+    public override bool activate(Tile target) {
         if (Vector2.Distance(owner.gameObject.transform.position, target.transform.position) <= snapDist) {
             owner.transform.position = target.transform.position;
             Color color = owner.spriteRenderer.color;
@@ -30,12 +30,9 @@ public class Teleport : Skill {
         return false;
     }
 
-    public override bool canBeUsed(GameObject target) {
+    public override bool canBeUsed(Tile target) {
         Tile startingTile = levelManager.getTileForPosition(owner.transform.position);
-        Tile targetTile = target.GetComponent<Tile>();
-        if (targetTile == null)
-            return false;
-        Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> floodFilledTiles = TileUtilities.floodFill<int>(startingTile, targetTile: targetTile);
-        return levelManager.isMovable(targetTile) && TileUtilities.getShortestWayFromFloodFilledTiles(floodFilledTiles, startingTile, targetTile).Count <= range;
+        Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> floodFilledTiles = TileUtilities.floodFill<int>(startingTile, targetTile: target);
+        return levelManager.isMovable(target) && TileUtilities.getShortestWayFromFloodFilledTiles(floodFilledTiles, startingTile, target).Count <= range;
     }
 }

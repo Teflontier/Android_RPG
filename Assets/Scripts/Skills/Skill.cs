@@ -15,10 +15,17 @@ public abstract class Skill : MonoBehaviour {
         ddol = GameObject.FindObjectOfType<DDOL>();
     }
 
-    public abstract void initialize(GameObject target);
+    protected Mob getMobOnTile(Tile target) {
+        GameObject objectOnTile = levelManager.getGameObjectOnTile(target);
+        if (objectOnTile == null)
+            return null;
+        return objectOnTile.GetComponent<Mob>();
+    }
 
-    public abstract bool activate(GameObject target);
+    public abstract void initialize(Tile target);
 
-    public abstract bool canBeUsed(GameObject target);
+    public abstract bool activate(Tile target);
+
+    public abstract bool canBeUsed(Tile target);
 
 }
