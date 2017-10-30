@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 21300000, guid: 4c386b1ce5b5a9a4c8a22489393442ac, type: 3}
-  range: 3
+  range: 5
   damage: 2
 --- !u!114 &114824462845730792
 MonoBehaviour:
