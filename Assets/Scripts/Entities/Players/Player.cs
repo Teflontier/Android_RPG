@@ -205,6 +205,8 @@ public class Player : Entity {
             if (skills[i].canBeUsed(tileToUseActionOn)) {
                 MethodInfo method = typeof(CommandMenu).GetMethod("setSkillButton" + (i + 1) + "Visibility");
                 method.Invoke(commandMenu, new object[]{ true });
+                method = typeof(CommandMenu).GetMethod("setSkillButton" + (i + 1) + "Image");
+                method.Invoke(commandMenu, new object[]{ skills[i].image });
             }
         }
         state = EntityState.WAIT_FOR_MENU_SELECTION;

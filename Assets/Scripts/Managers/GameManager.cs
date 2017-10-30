@@ -38,6 +38,9 @@ public class GameManager : MonoBehaviour {
         // the players should actually be created by some sort of ui and be chosen by the gamer
         Player player = GameObject.Instantiate(ddol.players[0].gameObject).GetComponent<Player>();
         Camera.main.transform.SetParent(player.gameObject.transform);
+        player.hp = player.maxHp;
+        player.mana = player.maxMana;
+        player.stamina = player.maxStamina;
         players.Add(player);
     }
 

@@ -40,6 +40,7 @@ GameObject:
   - component: {fileID: 212903452025228488}
   - component: {fileID: 114183523721700274}
   - component: {fileID: 114325972289132052}
+  - component: {fileID: 114809062407883012}
   - component: {fileID: 114824462845730792}
   - component: {fileID: 114326163764740204}
   m_Layer: 0
@@ -128,7 +129,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackRange: 2
   maxHp: 3
-  hp: 3
+  hp: 0
+  maxMana: 3
+  mana: 0
+  maxStamina: 3
+  stamina: 0
   maxMoves: 4
   moves: 0
   attackDamageBase: 1
@@ -189,6 +194,20 @@ MonoBehaviour:
   runTime: -1
   attacks: -1
   chance: 0.2
+--- !u!114 &114809062407883012
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1733558106550538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7018e87fa043ff34aa16e6c9dad1dde8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 21300000, guid: 4c386b1ce5b5a9a4c8a22489393442ac, type: 3}
+  range: 3
+  damage: 2
 --- !u!114 &114824462845730792
 MonoBehaviour:
   m_ObjectHideFlags: 1

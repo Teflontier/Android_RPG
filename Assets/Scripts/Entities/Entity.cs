@@ -32,8 +32,14 @@ public abstract class Entity : Clickable {
 
     public int attacks{ get { return attackCountCurrent + attackCountExtra; } }
 
-    public int maxHp = 3;
+    public float maxHp = 3;
     public float hp = 0;
+
+    public float maxMana = 3;
+    public float mana = 0;
+
+    public int maxStamina = 3;
+    public int stamina = 0;
 
     public int maxMoves = 3;
     public int moves = 0;
