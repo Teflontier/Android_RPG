@@ -17,6 +17,7 @@ public abstract class Entity : Clickable {
         ATTACK,
         SHOW_SKILLS,
         USING_SKILL,
+        USING_ITEM,
         END_TURN
     }
 
@@ -57,6 +58,7 @@ public abstract class Entity : Clickable {
     public EntityState state = EntityState.INITIALIZE;
     public GameObject clickedObject;
     public Skill[] skills;
+    public List<Item> items = new List<Item>();
 
     [HideInInspector]public SpriteRenderer spriteRenderer;
 

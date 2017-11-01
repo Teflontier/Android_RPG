@@ -17,7 +17,7 @@ public class AccumulatedHatred : Skill {
     }
 
     public override void initialize(Tile target) {
-        particles = GameObject.Instantiate(ddol.teleportationParticles, owner.gameObject.transform);
+        particles = GameObject.Instantiate(ddol.teleportationParticles, user.gameObject.transform);
     }
 
     public override bool activate(Tile target) {
@@ -25,22 +25,24 @@ public class AccumulatedHatred : Skill {
         if (Vector2.Distance(particles.transform.position, target.transform.position) > snapDist)
             return false;
         Destroy(particles);
-        getEntityOnTile(target).increaseHp(-damage);
+        levelManager.getEntityOnTile(target).increaseHp(-damage);
         return true;
     }
 
     public override bool canBeUsed(Tile target) {
-        Tile startingTile = levelManager.getTileForPosition(owner.transform.position);
-        if (getEntityOnTile(target) == null)
+        Tile startingTile = levelManager.getTileForPosition(user.transform.position);
+        if (levelManager.getEntityOnTile(target) == null)
             return false;
-        float distance = (target.transform.position - owner.transform.position).magnitude;
-        RaycastHit2D[] hits = Physics2D.LinecastAll(owner.transform.position, target.transform.position, layerMask);
+        float distance = (target.transform.position - user.transform.position).magnitude;
+        RaycastHit2D[] hits = Physics2D.LinecastAll(user.transform.position, target.transform.position, layerMask);
         foreach (RaycastHit2D hit in hits) {
             Tile hitTile = hit.collider.gameObject.GetComponent<Tile>();
-            Entity hitEntity = null;
-            if (hitTile == null || (hitEntity = getEntityOnTile(hitTile)) == null || hitEntity == owner)
+            if (hitTile == null)
                 continue;
-            float hitDist = Vector2.Distance(owner.transform.position, hit.collider.gameObject.transform.position);
+            Entity hitEntity = levelManager.getEntityOnTile(hitTile);
+            if (hitEntity == null || hitEntity == user)
+                continue;
+            float hitDist = Vector2.Distance(user.transform.position, hit.collider.gameObject.transform.position);
             if (hitDist < distance)
                 return false;
         }

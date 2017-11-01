@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Skill : MonoBehaviour {
+public abstract class Item : MonoBehaviour {
 
     public Sprite image;
     protected Entity user;
@@ -15,7 +15,8 @@ public abstract class Skill : MonoBehaviour {
         ddol = GameObject.FindObjectOfType<DDOL>();
     }
 
-    public abstract void initialize(Tile target);
+    public virtual void initialize(Tile target){
+    }
 
     public abstract bool activate(Tile target);
 

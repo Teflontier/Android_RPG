@@ -220,6 +220,13 @@ public class LevelManager : MonoBehaviour {
         return null;
     }
 
+    public Entity getEntityOnTile(Tile target) {
+        GameObject objectOnTile = getGameObjectOnTile(target);
+        if (objectOnTile == null)
+            return null;
+        return objectOnTile.GetComponent<Entity>();
+    }
+
     public bool isMovable(Tile tile) {
         if (tile == null)
             return false;

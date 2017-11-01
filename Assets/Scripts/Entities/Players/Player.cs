@@ -11,6 +11,7 @@ public class Player : Entity {
     private const string SKILL1 = "SkillButton1";
     private const string SKILL2 = "SkillButton2";
     private const string SKILL3 = "SkillButton3";
+    private const string ITEM = "Item";
 
     private Tile tileToUseActionOn;
     private GameObject lastMenuClicked;
@@ -142,6 +143,14 @@ public class Player : Entity {
                 commandMenu.setVisibility(false);
                 levelManager.destroyOverlays();
                 state = EntityState.USING_SKILL;
+                return;
+            case ITEM:
+                Item item = items[0];
+                items.RemoveAt(0);
+                item.initialize(tileToUseActionOn);
+                commandMenu.setVisibility(false);
+                levelManager.destroyOverlays();
+                state = EntityState.USING_ITEM;
                 return;
         }
     }
