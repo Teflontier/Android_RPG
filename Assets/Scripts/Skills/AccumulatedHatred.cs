@@ -46,7 +46,11 @@ public class AccumulatedHatred : Skill {
             if (hitDist < distance)
                 return false;
         }
-        Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> floodFilledTiles = TileUtilities.floodFill<int>(startingTile, targetTile: target);
-        return TileUtilities.getShortestWayFromFloodFilledTiles(floodFilledTiles, startingTile, target).Count <= range;
+        // TODO: A* not working correctly
+        Dictionary<WrappedTile<float>, KeyValuePair<WrappedTile<float>, int>> floodFilledTiles = TileUtilities.floodFill<float>(startingTile, targetTile: target, heuristicForShortestPath: tile => Vector2.Distance(tile.transform.position, target.transform.position), insertionComparer: (i1, i2) => i1.CompareTo(i2));
+
+//        Dictionary<WrappedTile<float>, KeyValuePair<WrappedTile<float>, int>> floodFilledTiles = TileUtilities.floodFill<int>(startingTile, targetTile: target);
+        List<Tile> shortestPath = TileUtilities.getShortestWayFromFloodFilledTiles(floodFilledTiles, startingTile, target);
+        return shortestPath == null ? false : shortestPath.Count <= range;
     }
 }

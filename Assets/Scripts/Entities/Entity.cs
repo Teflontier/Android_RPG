@@ -68,6 +68,7 @@ public abstract class Entity : Clickable {
     protected DDOL ddol;
     protected LevelManager levelManager;
     protected CommandMenu commandMenu;
+    protected ItemMenu itemMenu;
 
     public override void Awake() {
         base.Awake();
@@ -75,6 +76,7 @@ public abstract class Entity : Clickable {
         levelManager = GameObject.FindObjectOfType<LevelManager>();
         gameManager = GameObject.FindObjectOfType<GameManager>();
         commandMenu = GameObject.FindObjectOfType<CommandMenu>();
+        itemMenu = GameObject.FindObjectOfType<ItemMenu>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 

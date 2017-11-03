@@ -14,6 +14,7 @@ public class CommandMenu : MonoBehaviour {
     private SpriteRenderer skillButton1Renderer;
     private SpriteRenderer skillButton2Renderer;
     private SpriteRenderer skillButton3Renderer;
+    private GameObject itemButton;
 
     public void Awake() {
         moveButton = transform.Find("Move").gameObject;
@@ -26,6 +27,7 @@ public class CommandMenu : MonoBehaviour {
         skillButton1Renderer = skillButton1.GetComponent<SpriteRenderer>();
         skillButton2Renderer = skillButton2.GetComponent<SpriteRenderer>();
         skillButton3Renderer = skillButton3.GetComponent<SpriteRenderer>();
+        itemButton = transform.Find("Item").gameObject;
     }
 
     public void setVisibility(bool visible) {
@@ -34,6 +36,7 @@ public class CommandMenu : MonoBehaviour {
         setEndVisibility(visible);
         setSkillVisibility(visible);
         setSkillSubButtonsVisibility(visible);
+        setItemVisibility(visible);
     }
 
     public void setMoveVisibility(bool visible) {
@@ -80,5 +83,9 @@ public class CommandMenu : MonoBehaviour {
 
     public void setSkillButton3Image(Sprite sprite) {
         skillButton3Renderer.sprite = sprite;
+    }
+
+    public void setItemVisibility(bool visible) {
+        itemButton.SetActive(visible);
     }
 }

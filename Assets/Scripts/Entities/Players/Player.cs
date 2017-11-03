@@ -92,6 +92,8 @@ public class Player : Entity {
             }
         }
         commandMenu.setEndVisibility(true);
+        // TODO: this is debugging code
+        commandMenu.setItemVisibility(true);
         state = EntityState.WAIT_FOR_MENU_SELECTION;
     }
 
@@ -145,12 +147,14 @@ public class Player : Entity {
                 state = EntityState.USING_SKILL;
                 return;
             case ITEM:
-                Item item = items[0];
-                items.RemoveAt(0);
-                item.initialize(tileToUseActionOn);
+                itemMenu.setVisibility(true);
                 commandMenu.setVisibility(false);
                 levelManager.destroyOverlays();
-                state = EntityState.USING_ITEM;
+//                Item item = items[0];
+//                items.RemoveAt(0);
+//                item.initialize(tileToUseActionOn);
+//                state = EntityState.USING_ITEM;
+                state = EntityState.SHOW_POSSIBLE_MOVES;
                 return;
         }
     }

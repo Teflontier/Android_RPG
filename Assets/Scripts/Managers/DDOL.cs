@@ -11,6 +11,7 @@ public class DDOL : MonoBehaviour {
     public List<Blocker> blockers;
     public List<Player> players;
     public List<Mob> mobs;
+    public List<Item> items;
 
     public GameObject greenOverlay;
     public GameObject redOverlay;
