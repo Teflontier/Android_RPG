@@ -1,0 +1,30 @@
+•----------• SKILLS •----------•
+
+--------------------Priester--------------------
+
+•Heilende Berührung 
+	Kosten 2 Mana
+	Ein Verbündeter erhält 2+Würfel Leben
+
+•Im Namen des Lichts 
+	Kosten 8 Mana	
+	Ein Toter Charakter in  3 Feldern zu dir wird mit 50% Leben
+	und 25% Mana und Ausdauer wiederbelebt.
+
+•Reinigendes Licht
+	Kosten 2 Mana
+	Entferne einen debuff von einem Spieler deiner Wahl
+
+•Focusierter Geist (passiv)
+	Level Option lvl 1-3
+	#1  Erhalte zu beginn deines zuges 1 Mana
+	#2  Erhalte zu beginn deines zuges 2 Mana
+	#3  Erhalte zu beginn deines zuges 3 Mana
+
+•Strahlende Präsens
+	kosten: 5mana 1AP
+	Alle Verbündeter im Umkreis von 8 Feldern (Sichtlinie)
+	heilen 2HP, hat ein Verbündeter dann 5 oder weniger HP
+	heilt er weiter 3HP
+
+

@@ -1,0 +1,31 @@
+•----------• SKILLS •----------•
+
+--------------------Magier--------------------
+
+•Arkane Überladung:
+	Kostet 2 Mana, Magischer Schaden +X, Manakosten +X 
+		Für den nächsten Angriff nutzbar. Für jede Runde in der kein Angriff 
+		erfolgt, kostet die aufrechterhaltung 2 Mana und 2 Ausdauer.
+		Skill erlischt nach Nutzung des nächsten Kampfzaubers oder bei 
+		Mana oder Ausdauer <2
+	
+•Magischer Speer:
+	Kostet 2 Mana, Schaden: Würfel + 2
+	
+•Schwarzes Feuer:
+	Kostet 4 Mana, Schaden: Würfel - 2 
+		Fügt sich selbst 1 Schaden zu falls Ergebnis kleiner oder gleich 0.
+		Verbrennt Gegner mit ewig währender Flamme.
+		(2 Dmg pro Runde, 1 Dmg pro Runde bei "Bossen")
+		
+•Fraternitas Anoli (Passiv):
+	+1 Mana zurückgewinnung bei getötetem Gegner
+		
+•Clairvoyance:
+	Kostet 1 Mana
+		Hellsehen durch die Kraft der Konzentration.
+		Zusätzlicher Verteidigungswürfel?
+		Verteidigung +X in der darauffolgenden Runde?
+		
+•Geistliche Erlösung:
+	Kostet 1 Lebenspunkt, gibt 2 Mana
