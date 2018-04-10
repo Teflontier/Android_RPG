@@ -24,7 +24,7 @@ public class TileUtilities : MonoBehaviour {
         return temp.Equals(default(KeyValuePair<WrappedTile<T>, KeyValuePair<WrappedTile<T>, int>>)) ? null : temp.Key;
     }
 
-    public static Dictionary<WrappedTile<T>, KeyValuePair<WrappedTile<T>, int>> floodFill<T>(Tile startingTile, int searchDepth = -1, Predicate<Tile> adjacentTilesFilter = null, Tile targetTile = null, Func<Tile, T> heuristicForShortestPath = null, Comparer<T> insertionComparer = null) {
+    public static Dictionary<WrappedTile<T>, KeyValuePair<WrappedTile<T>, int>> floodFill<T>(Tile startingTile, int searchDepth = -1, Predicate<Tile> adjacentTilesFilter = null, Tile targetTile = null, Func<Tile, T> heuristicForShortestPath = null, Comparison<T> insertionComparer = null) {
         if (searchDepth < 0 && targetTile == null)
             throw new UnityException("Search depth is infinity and target tile is null -> endless loop");
 
@@ -76,10 +76,10 @@ public class TileUtilities : MonoBehaviour {
         return surroundingTiles;
     }
 
-    private static void insertTilesOrdered<T>(Comparer<T> insertionComparer, List<WrappedTile<T>> tilesToBeInserted, List<WrappedTile<T>> tilesToInsertIn) {
+    private static void insertTilesOrdered<T>(Comparison<T> insertionComparer, List<WrappedTile<T>> tilesToBeInserted, List<WrappedTile<T>> tilesToInsertIn) {
         tilesToBeInserted.ForEach(adTile => {
                 for (int i = 0; i < tilesToInsertIn.Count; i++) {
-                    if (insertionComparer.Compare(adTile.metadata, tilesToInsertIn[i].metadata) < 0) {
+                    if (insertionComparer(adTile.metadata, tilesToInsertIn[i].metadata) < 0) {
                         tilesToInsertIn.Insert(i, adTile);
                         return;
                     }

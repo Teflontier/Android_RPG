@@ -11,27 +11,27 @@ public class Teleport : Skill {
     private GameObject particles;
 
     public override void initialize(Tile target) {
-        Color color = owner.spriteRenderer.color;
+        Color color = user.spriteRenderer.color;
         color.a = colorAlpha;
-        owner.spriteRenderer.color = color;
-        particles = GameObject.Instantiate(ddol.teleportationParticles, owner.gameObject.transform);
+        user.spriteRenderer.color = color;
+        particles = GameObject.Instantiate(ddol.teleportationParticles, user.gameObject.transform);
     }
 
     public override bool activate(Tile target) {
-        if (Vector2.Distance(owner.gameObject.transform.position, target.transform.position) <= snapDist) {
-            owner.transform.position = target.transform.position;
-            Color color = owner.spriteRenderer.color;
+        if (Vector2.Distance(user.gameObject.transform.position, target.transform.position) <= snapDist) {
+            user.transform.position = target.transform.position;
+            Color color = user.spriteRenderer.color;
             color.a = 1f;
-            owner.spriteRenderer.color = color;
+            user.spriteRenderer.color = color;
             Destroy(particles);
             return true;
         }
-        owner.transform.position = Vector2.MoveTowards(owner.transform.position, target.transform.position, moveSpeed * Time.deltaTime);
+        user.transform.position = Vector2.MoveTowards(user.transform.position, target.transform.position, moveSpeed * Time.deltaTime);
         return false;
     }
 
     public override bool canBeUsed(Tile target) {
-        Tile startingTile = levelManager.getTileForPosition(owner.transform.position);
+        Tile startingTile = levelManager.getTileForPosition(user.transform.position);
         Dictionary<WrappedTile<int>, KeyValuePair<WrappedTile<int>, int>> floodFilledTiles = TileUtilities.floodFill<int>(startingTile, targetTile: target);
         return levelManager.isMovable(target) && TileUtilities.getShortestWayFromFloodFilledTiles(floodFilledTiles, startingTile, target).Count <= range;
     }

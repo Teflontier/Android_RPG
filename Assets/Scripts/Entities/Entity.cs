@@ -17,6 +17,7 @@ public abstract class Entity : Clickable {
         ATTACK,
         SHOW_SKILLS,
         USING_SKILL,
+        USING_ITEM,
         END_TURN
     }
 
@@ -57,6 +58,7 @@ public abstract class Entity : Clickable {
     public EntityState state = EntityState.INITIALIZE;
     public GameObject clickedObject;
     public Skill[] skills;
+    public List<Item> items = new List<Item>();
 
     [HideInInspector]public SpriteRenderer spriteRenderer;
 
@@ -66,6 +68,7 @@ public abstract class Entity : Clickable {
     protected DDOL ddol;
     protected LevelManager levelManager;
     protected CommandMenu commandMenu;
+    protected ItemMenu itemMenu;
 
     public override void Awake() {
         base.Awake();
@@ -73,6 +76,7 @@ public abstract class Entity : Clickable {
         levelManager = GameObject.FindObjectOfType<LevelManager>();
         gameManager = GameObject.FindObjectOfType<GameManager>();
         commandMenu = GameObject.FindObjectOfType<CommandMenu>();
+        itemMenu = GameObject.FindObjectOfType<ItemMenu>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 

@@ -20,6 +20,7 @@ public class LevelManager : MonoBehaviour {
     [HideInInspector] public List<Tile> tiles = new List<Tile>();
     [HideInInspector] public List<Blocker> blockers = new List<Blocker>();
     [HideInInspector] public List<Entity> entities = new List<Entity>();
+    [HideInInspector] public List<Item> items = new List<Item>();
     [HideInInspector] public Tile[,] tileMatrix;
 
     private DDOL ddol;
@@ -28,6 +29,7 @@ public class LevelManager : MonoBehaviour {
     private Transform tileObjectHolder;
     private Transform blockerObjectHolder;
     private Transform overlayObjectHolder;
+    private Transform itemObjectHolder;
 
     public void Awake() {
         ddol = GameObject.FindObjectOfType<DDOL>();
@@ -36,6 +38,7 @@ public class LevelManager : MonoBehaviour {
         tileObjectHolder = transform.Find("Tiles");
         blockerObjectHolder = transform.Find("Blockers");
         overlayObjectHolder = transform.Find("Overlays");
+        itemObjectHolder = transform.Find("Items");
         tileMatrix = new Tile[width, height];
         instance = this;
     }
@@ -48,6 +51,7 @@ public class LevelManager : MonoBehaviour {
         playersToPlace.ForEach(player => entities.Add(player));
         createPlayers(playersToPlace);
         createMobs();
+        createItems();
     }
 
     private void destroyLevel() {
@@ -60,6 +64,8 @@ public class LevelManager : MonoBehaviour {
         foreach (Transform child in blockerObjectHolder)
             Destroy(child.gameObject);
         foreach (Transform child in overlayObjectHolder)
+            Destroy(child.gameObject);
+        foreach (Transform child in itemObjectHolder)
             Destroy(child.gameObject);
         tiles.Clear();
         blockers.Clear();
@@ -151,6 +157,13 @@ public class LevelManager : MonoBehaviour {
         }
     }
 
+    private void createItems() {
+        for (int i = 0; i < 20; i++) {
+            Vector2 coordinates = getRandomFreeTileCoordinates();
+            items.Add(GameObject.Instantiate(ddol.items[Random.Range(0, ddol.items.Count)], coordinates, Quaternion.identity, itemObjectHolder) as Item);
+        }
+    }
+
     private Vector2 getRandomCoordinates() {
         return getCoordinatesFor(Random.Range(0, width), Random.Range(0, height));
     }
@@ -218,6 +231,13 @@ public class LevelManager : MonoBehaviour {
         if (entity != null)
             return entity.gameObject;
         return null;
+    }
+
+    public Entity getEntityOnTile(Tile target) {
+        GameObject objectOnTile = getGameObjectOnTile(target);
+        if (objectOnTile == null)
+            return null;
+        return objectOnTile.GetComponent<Entity>();
     }
 
     public bool isMovable(Tile tile) {
