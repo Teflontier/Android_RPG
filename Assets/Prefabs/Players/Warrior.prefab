@@ -146,6 +146,7 @@ MonoBehaviour:
   state: 0
   clickedObject: {fileID: 0}
   skills: []
+  items: []
   spriteRenderer: {fileID: 0}
 --- !u!114 &114192308588666374
 MonoBehaviour:
@@ -255,7 +256,7 @@ SpriteRenderer:
   m_SortingLayerID: 1024231357
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e2c100231d3c2aa478fed088336288ce, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ecb0014caa7a48b41bd3c8e803eee0a7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
