@@ -1,0 +1,58 @@
+•Do I have to install it?
+Short answer, no.
+But I also recommend you to put it in your Program folder and make a shortcut for the aseprite.exe.
+
+•How do I run it?
+You just double click on "aseprite.exe".
+
+•It doesn't work/there are bugs/gives me errors
+Welp, i'm sorry to ruin it for you, but i'm not gonna help you in this. I'm not trying to be mean, it's just that the developer needs food too!
+Of course, if the Compressed file is corrupted, just let me know and i'll fix it.
+If you have any kind of other problems, you can just BUY it on official sources (Check out "Where can I buy it" below) and ask to the developer for help if the problem persist.
+
+•How can I update it?
+You got a few options there.
+RECOMMENDED: By buying it. It gives auto-updates if you buy it on Steam or on itch.io app (Link: http://www.aseprite.org/faq/#how-do-i-update-my-current-version)
+The second one is to wait while i build it and share it. You just have to regularly check out my Dropbox (Link: https://www.dropbox.com/sh/yv8rq13652hi22h/AACP8IwruIRsRCxbGeJ16cTaa?dl=0)
+The third one is to build it yourself. (Link: https://github.com/aseprite/aseprite/blob/master/INSTALL.md)
+
+•Where can I buy it?
+Steam (Auto updates and Beta!): http://store.steampowered.com/app/431730
+Itch.io (Auto updates): https://dacap.itch.io/aseprite
+Website (Few options): http://www.aseprite.org/download/
+
+•Can I donate to the Developer?
+YES you can!
+Link: http://www.aseprite.org/donate/
+
+•Can I donate to you random guy?
+NO, you can't!
+I'm not doing anything special, anyone can do what I'm doing.
+I'm just doing it because I like helping people if I can.
+Support the Developer!
+If you want to show me your support, a nice comment will do just fine!
+
+•Where's the v1.2-beta1
+Well, there isn't any v1.2-beta1 yet.
+It's only on the Steam beta branch.
+
+•Are you the Developer?
+No, I'm not.
+I'm just a guy that is building it for everyone to use it.
+
+•Is it legal?
+Of course it is.
+The Developer itself put it on Github for everyone to compile and use.
+
+•What's Allegro?
+It's a deprecated back-end that will be removed, that's why I built only the 1.1.5.6 on it.
+Usually it gives an annoying bug while dragging windows around.
+All the versions that do not have the "Allegro" word on it, are built on Skia, like they should be!
+
+•What are these files?
+So, the folder "data" and "aseprite.exe" are the main files for Aseprite.
+msvcp140.dll and vcruntime140.dll are a part of Microsoft Visual C++.
+They're not needed for everyone, just for who doesn't have them installed or if it says that they're missing.
+I just put them in there to solve the problem instantly for some users.
+You can try and delete them if you're sure that you already have Microsoft Visual C++ installed or
+if you want to install it. (Download Link: https://www.microsoft.com/it-it/download/details.aspx?id=48145)
